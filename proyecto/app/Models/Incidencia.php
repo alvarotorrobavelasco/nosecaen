@@ -2,21 +2,11 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-/**
- * Modelo para tabla incidencias.
- * Nota: created_at se gestiona vía trigger SQL. Laravel solo actualiza updated_at.
- * @author   Álvaro Torroba Velasco
- * @version  1.0.0
- * @date     2026-04-21
- */
 class Incidencia extends Model
 {
-    /** @var string */
     protected $table = 'incidencias';
 
-    /** @var array<int, string> */
     protected $fillable = [
         'cliente_id', 'persona_contacto', 'telefono_contacto', 'descripcion',
         'email_contacto', 'direccion', 'poblacion', 'codigo_postal', 'provincia_codigo',
@@ -24,24 +14,29 @@ class Incidencia extends Model
         'anotaciones_despues', 'archivo_resumen'
     ];
 
-    /** @var array<string> Solo gestionamos updated_at automáticamente */
-    public $timestamps = ['updated_at'];
+    // El trigger SQL gestiona created_at, pero necesitamos que Laravel lo castee a fecha
+    const CREATED_AT = 'created_at';
+    const UPDATED_AT = 'updated_at';
 
-    /**
-     * Relación N:1 con cliente.
-     * @return BelongsTo
-     */
-    public function cliente(): BelongsTo
+    // Forzamos que estos campos sean tratados como fechas (Carbon)
+    protected $casts = [
+        'created_at' => 'datetime',
+        'updated_at' => 'datetime',
+        'fecha_realizacion' => 'date',
+    ];
+
+    public function cliente()
     {
         return $this->belongsTo(Cliente::class);
     }
 
-    /**
-     * Relación N:1 con operario asignado.
-     * @return BelongsTo
-     */
-    public function operario(): BelongsTo
+    public function operario()
     {
         return $this->belongsTo(Empleado::class, 'operario_id');
+    }
+
+    public function provincia()
+    {
+        return $this->belongsTo(Provincia::class, 'provincia_codigo', 'codigo_ine');
     }
 }

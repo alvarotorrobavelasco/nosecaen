@@ -8,28 +8,18 @@ use App\Models\Provincia;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
-/**
- * Controlador para gestión de incidencias.
- * @author Álvaro Torroba Velasco
- * @version 1.0.0
- */
 class IncidenciaController extends Controller
 {
-    /**
-     * Listar incidencias.
-     */
     public function index()
     {
         $user = Auth::user();
         
-        // Si es operario, solo ve las suyas
         if ($user->tipo === 'operario') {
             $incidencias = Incidencia::where('operario_id', $user->id)
                 ->with(['cliente', 'operario'])
                 ->latest()
                 ->paginate(10);
         } else {
-            // Admin ve todas
             $incidencias = Incidencia::with(['cliente', 'operario'])
                 ->latest()
                 ->paginate(10);
@@ -38,9 +28,6 @@ class IncidenciaController extends Controller
         return view('incidencias.index', compact('incidencias'));
     }
 
-    /**
-     * Formulario crear incidencia.
-     */
     public function create()
     {
         $clientes = Cliente::orderBy('nombre')->get();
@@ -50,26 +37,21 @@ class IncidenciaController extends Controller
         return view('incidencias.create', compact('clientes', 'provincias', 'operarios'));
     }
 
-    /**
-     * Guardar nueva incidencia.
-     */
     public function store(Request $request)
     {
-        // Validación básica
         $validated = $request->validate([
             'cliente_id' => 'required|exists:clientes,id',
             'persona_contacto' => 'required|string|max:100',
             'telefono_contacto' => 'required|string',
             'descripcion' => 'required|string',
             'email_contacto' => 'required|email',
+            'direccion' => 'nullable|string|max:255',
+            'poblacion' => 'nullable|string|max:100',
+            'codigo_postal' => 'nullable|string|max:5',
             'provincia_codigo' => 'required|exists:provincias,codigo_ine',
             'estado' => 'required|in:P,R,C',
+            'operario_id' => 'nullable|exists:empleados,id'
         ]);
-
-        // Si es admin, requiere operario asignado
-        if (Auth::user()->tipo === 'administrador') {
-            $validated['operario_id'] = $request->operario_id;
-        }
 
         Incidencia::create($validated);
 
@@ -77,17 +59,11 @@ class IncidenciaController extends Controller
             ->with('success', 'Incidencia creada correctamente');
     }
 
-    /**
-     * Mostrar incidencia.
-     */
     public function show(Incidencia $incidencia)
     {
         return view('incidencias.show', compact('incidencia'));
     }
 
-    /**
-     * Formulario editar.
-     */
     public function edit(Incidencia $incidencia)
     {
         $clientes = Cliente::orderBy('nombre')->get();
@@ -97,9 +73,6 @@ class IncidenciaController extends Controller
         return view('incidencias.edit', compact('incidencia', 'clientes', 'provincias', 'operarios'));
     }
 
-    /**
-     * Actualizar incidencia.
-     */
     public function update(Request $request, Incidencia $incidencia)
     {
         $validated = $request->validate([
@@ -108,13 +81,13 @@ class IncidenciaController extends Controller
             'telefono_contacto' => 'required|string',
             'descripcion' => 'required|string',
             'email_contacto' => 'required|email',
+            'direccion' => 'nullable|string|max:255',
+            'poblacion' => 'nullable|string|max:100',
+            'codigo_postal' => 'nullable|string|max:5',
             'provincia_codigo' => 'required|exists:provincias,codigo_ine',
             'estado' => 'required|in:P,R,C',
+            'operario_id' => 'nullable|exists:empleados,id'
         ]);
-
-        if (Auth::user()->tipo === 'administrador') {
-            $validated['operario_id'] = $request->operario_id;
-        }
 
         $incidencia->update($validated);
 
@@ -122,9 +95,6 @@ class IncidenciaController extends Controller
             ->with('success', 'Incidencia actualizada');
     }
 
-    /**
-     * Eliminar incidencia.
-     */
     public function destroy(Incidencia $incidencia)
     {
         $incidencia->delete();
