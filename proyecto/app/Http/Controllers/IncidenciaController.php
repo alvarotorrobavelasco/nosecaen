@@ -9,8 +9,22 @@ use App\Models\Provincia;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
+/**
+ * Controlador para la gestión de Incidencias.
+ * 
+ * Gestiona las incidencias técnicas del sistema.
+ * 
+ * @author Álvaro Torroba Velasco
+ * @version 1.0.0
+ * @package App\Http\Controllers
+ */
 class IncidenciaController extends Controller
 {
+    /**
+     * Listado de incidencias.
+     * 
+     * @return \Illuminate\View\View
+     */
     public function index()
     {
         $user = Auth::user();
@@ -22,6 +36,11 @@ class IncidenciaController extends Controller
         return view('incidencias.index', compact('incidencias'));
     }
 
+    /**
+     * Formulario de creación.
+     * 
+     * @return \Illuminate\View\View
+     */
     public function create()
     {
         $clientes = Cliente::orderBy('nombre')->get();
@@ -30,9 +49,15 @@ class IncidenciaController extends Controller
         return view('incidencias.create', compact('clientes', 'provincias', 'operarios'));
     }
 
+    /**
+     * Guardar incidencia.
+     * 
+     * @param \Illuminate\Http\Request $request
+     * @return \Illuminate\Http\RedirectResponse
+     */
     public function store(Request $request)
     {
-        $request->validate([
+        $validated = $request->validate([
             'cliente_id' => 'required|exists:clientes,id',
             'persona_contacto' => 'required|string|max:100',
             'telefono_contacto' => 'required|regex:/^[\d\s\.\-\(\)]+$/',
@@ -44,26 +69,33 @@ class IncidenciaController extends Controller
             'provincia_codigo' => 'required|exists:provincias,codigo_ine',
             'estado' => 'required|in:P,R,C',
             'operario_id' => 'nullable|exists:empleados,id',
-        ], [
-            'telefono_contacto.regex' => 'El teléfono solo puede contener números y caracteres básicos.',
-            'codigo_postal.regex' => 'El código postal debe ser de 5 dígitos.',
-            'estado.in' => 'El estado solo puede ser P, R o C.',
         ]);
 
-        Incidencia::create($request->all());
+        Incidencia::create($validated);
         return redirect()->route('incidencias.index')->with('success', 'Incidencia creada.');
     }
 
+    /**
+     * Detalle de incidencia.
+     * 
+     * @param \App\Models\Incidencia $incidencia
+     * @return \Illuminate\View\View
+     */
     public function show(Incidencia $incidencia)
     {
         return view('incidencias.show', compact('incidencia'));
     }
 
+    /**
+     * Formulario de edición.
+     * 
+     * @param \App\Models\Incidencia $incidencia
+     * @return \Illuminate\View\View
+     */
     public function edit(Incidencia $incidencia)
     {
-        // Validar permisos: admin puede todo, operario solo si es SUYA
         if (Auth::user()->tipo === 'operario' && $incidencia->operario_id !== Auth::id()) {
-            abort(403, 'No tienes permiso para editar esta incidencia');
+            abort(403);
         }
         
         $clientes = Cliente::orderBy('nombre')->get();
@@ -73,14 +105,19 @@ class IncidenciaController extends Controller
         return view('incidencias.edit', compact('incidencia', 'clientes', 'provincias', 'operarios'));
     }
 
+    /**
+     * Actualizar incidencia.
+     * 
+     * @param \Illuminate\Http\Request $request
+     * @param \App\Models\Incidencia $incidencia
+     * @return \Illuminate\Http\RedirectResponse
+     */
     public function update(Request $request, Incidencia $incidencia)
     {
-        // Validar permisos: admin puede todo, operario solo si es SUYA
         if (Auth::user()->tipo === 'operario' && $incidencia->operario_id !== Auth::id()) {
-            abort(403, 'No tienes permiso para modificar esta incidencia');
+            abort(403);
         }
 
-        // Validaciones DIFERENCIADAS por rol
         if (Auth::user()->tipo === 'administrador') {
             $rules = [
                 'cliente_id' => 'required|exists:clientes,id',
@@ -96,7 +133,6 @@ class IncidenciaController extends Controller
                 'operario_id' => 'nullable|exists:empleados,id',
             ];
         } else {
-            // Operario SOLO puede cambiar estado y anotaciones
             $rules = [
                 'estado' => 'required|in:P,R,C',
                 'anotaciones_despues' => 'nullable|string',
@@ -104,13 +140,8 @@ class IncidenciaController extends Controller
             ];
         }
 
-        $request->validate($rules, [
-            'telefono_contacto.regex' => 'El teléfono solo puede contener números y caracteres básicos.',
-            'codigo_postal.regex' => 'El código postal debe ser de 5 dígitos.',
-            'estado.in' => 'El estado solo puede ser P, R o C.',
-        ]);
+        $request->validate($rules);
 
-        // Actualizar según rol
         if (Auth::user()->tipo === 'administrador') {
             $incidencia->update($request->all());
         } else {
@@ -124,22 +155,38 @@ class IncidenciaController extends Controller
         return redirect()->route('incidencias.index')->with('success', 'Incidencia actualizada.');
     }
 
+    /**
+     * Eliminar incidencia.
+     * 
+     * @param \App\Models\Incidencia $incidencia
+     * @return \Illuminate\Http\RedirectResponse
+     */
     public function destroy(Incidencia $incidencia)
     {
         $incidencia->delete();
         return redirect()->route('incidencias.index')->with('success', 'Incidencia eliminada.');
     }
 
-    // Métodos para registro público de clientes (sin login)
+    /**
+     * Registro público de incidencias (sin login).
+     * 
+     * @return \Illuminate\View\View
+     */
     public function createCliente()
     {
         $provincias = Provincia::orderBy('nombre')->get();
         return view('clientes.registro', compact('provincias'));
     }
 
+    /**
+     * Guardar incidencia desde registro público.
+     * 
+     * @param \Illuminate\Http\Request $request
+     * @return \Illuminate\Http\RedirectResponse
+     */
     public function storeCliente(Request $request)
     {
-        $request->validate([
+        $validated = $request->validate([
             'persona_contacto' => 'required|string|max:100',
             'telefono_contacto' => 'required|regex:/^[\d\s\.\-\(\)]+$/',
             'email_contacto' => 'required|email',
@@ -148,24 +195,21 @@ class IncidenciaController extends Controller
             'poblacion' => 'nullable|string|max:100',
             'codigo_postal' => 'nullable|regex:/^\d{5}$/',
             'provincia_codigo' => 'required|exists:provincias,codigo_ine',
-        ], [
-            'telefono_contacto.regex' => 'El teléfono solo puede contener números y caracteres básicos.',
-            'codigo_postal.regex' => 'El código postal debe ser de 5 dígitos.',
         ]);
 
         Incidencia::create([
-            'persona_contacto' => $request->persona_contacto,
-            'telefono_contacto' => $request->telefono_contacto,
-            'email_contacto' => $request->email_contacto,
-            'descripcion' => $request->descripcion,
-            'direccion' => $request->direccion,
-            'poblacion' => $request->poblacion,
-            'codigo_postal' => $request->codigo_postal,
-            'provincia_codigo' => $request->provincia_codigo,
+            'persona_contacto' => $validated['persona_contacto'],
+            'telefono_contacto' => $validated['telefono_contacto'],
+            'email_contacto' => $validated['email_contacto'],
+            'descripcion' => $validated['descripcion'],
+            'direccion' => $validated['direccion'],
+            'poblacion' => $validated['poblacion'],
+            'codigo_postal' => $validated['codigo_postal'],
+            'provincia_codigo' => $validated['provincia_codigo'],
             'estado' => 'P',
             'cliente_id' => null,
         ]);
 
-        return redirect()->route('cliente.registro')->with('success', 'Incidencia registrada correctamente. Nos pondremos en contacto.');
+        return redirect()->route('cliente.registro')->with('success', 'Incidencia registrada correctamente.');
     }
 }
