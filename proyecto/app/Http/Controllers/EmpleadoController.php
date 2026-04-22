@@ -33,7 +33,6 @@ class EmpleadoController extends Controller
         
         $validated = $request->validate([
             'nombre' => 'required|string|max:100',
-            'apellidos' => 'required|string|max:150',
             'telefono' => 'required|regex:/^[\d\s\.\-\(\)]+$/',
             'email' => 'required|email|unique:empleados,email',
             'password' => 'required|min:6|confirmed',
@@ -46,7 +45,6 @@ class EmpleadoController extends Controller
 
         Empleado::create([
             'nombre' => $validated['nombre'],
-            'apellidos' => $validated['apellidos'],
             'telefono' => $validated['telefono'],
             'email' => $validated['email'],
             'password' => Hash::make($validated['password']),
@@ -72,47 +70,37 @@ class EmpleadoController extends Controller
     {
         if (!$this->esAdmin()) abort(403);
         
-        // Validación completa (incluyendo apellidos y password opcional)
         $validated = $request->validate([
             'nombre' => 'required|string|max:100',
-            'apellidos' => 'required|string|max:150',
             'telefono' => 'required|regex:/^[\d\s\.\-\(\)]+$/',
             'email' => 'required|email|unique:empleados,email,' . $empleado->id,
             'tipo' => 'required|in:administrador,operario',
-            'password' => 'nullable|min:6|confirmed', // Contraseña opcional al editar
+            'password' => 'nullable|min:6|confirmed',
         ], [
             'telefono.regex' => 'El teléfono solo puede contener números y caracteres básicos.',
             'email.unique' => 'Este email ya está registrado.',
             'password.confirmed' => 'Las contraseñas no coinciden.',
         ]);
 
-        // Preparar datos básicos
         $data = [
             'nombre' => $validated['nombre'],
-            'apellidos' => $validated['apellidos'],
             'telefono' => $validated['telefono'],
             'email' => $validated['email'],
             'tipo' => $validated['tipo'],
         ];
 
-        // Solo actualizar contraseña si se ha escrito una nueva
         if (!empty($validated['password'])) {
             $data['password'] = Hash::make($validated['password']);
         }
 
         $empleado->update($data);
-
         return redirect()->route('empleados.index')->with('success', 'Empleado actualizado.');
     }
 
     public function destroy(Empleado $empleado)
     {
         if (!$this->esAdmin()) abort(403);
-        
-        if ($empleado->id === Auth::id()) {
-            return back()->with('error', 'No puedes eliminar tu propia cuenta.');
-        }
-        
+        if ($empleado->id === Auth::id()) return back()->with('error', 'No puedes eliminar tu propia cuenta.');
         $empleado->delete();
         return redirect()->route('empleados.index')->with('success', 'Empleado eliminado.');
     }
