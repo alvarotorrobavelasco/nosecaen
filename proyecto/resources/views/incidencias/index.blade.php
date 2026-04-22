@@ -4,7 +4,7 @@
 
 @section('content')
 <div class="d-flex justify-content-between align-items-center mb-4">
-    <h2><i class="fas fa-clipboard-list"></i> Incidencias</h2>
+    <h2><i class="fas fa-tools"></i> Incidencias</h2>
     @if(Auth::user()->tipo === 'administrador')
         <a href="{{ route('incidencias.create') }}" class="btn btn-primary">
             <i class="fas fa-plus"></i> Nueva Incidencia
@@ -13,7 +13,10 @@
 </div>
 
 @if(session('success'))
-    <div class="alert alert-success">{{ session('success') }}</div>
+    <div class="alert alert-success alert-dismissible fade show">
+        {{ session('success') }}
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
 @endif
 
 <table class="table table-striped table-hover">
@@ -22,10 +25,11 @@
             <th>ID</th>
             <th>Cliente</th>
             <th>Contacto</th>
+            <th>Teléfono</th>
             <th>Descripción</th>
             <th>Estado</th>
             <th>Operario</th>
-            <th>Fecha Creación</th>
+            <th>Fecha</th>
             <th>Acciones</th>
         </tr>
     </thead>
@@ -33,8 +37,9 @@
         @forelse($incidencias as $inc)
         <tr>
             <td>{{ $inc->id }}</td>
-            <td>{{ $inc->cliente->nombre }}</td>
+            <td>{{ $inc->cliente->nombre ?? 'Cliente público' }}</td>
             <td>{{ $inc->persona_contacto }}</td>
+            <td>{{ $inc->telefono_contacto }}</td>
             <td>{{ Str::limit($inc->descripcion, 50) }}</td>
             <td>
                 @if($inc->estado === 'P')
@@ -46,7 +51,7 @@
                 @endif
             </td>
             <td>{{ $inc->operario->nombre ?? 'Sin asignar' }}</td>
-            <td>{{ $inc->created_at->format('d/m/Y') }}</td>
+            <td>{{ $inc->created_at->format('d/m/Y H:i') }}</td>
             <td>
                 <a href="{{ route('incidencias.show', $inc) }}" class="btn btn-sm btn-info">
                     <i class="fas fa-eye"></i>
@@ -56,19 +61,16 @@
                         <i class="fas fa-edit"></i>
                     </a>
                     <form action="{{ route('incidencias.destroy', $inc) }}" method="POST" class="d-inline" 
-                          onsubmit="return confirm('¿Eliminar esta incidencia?')">
-                        @csrf
-                        @method('DELETE')
-                        <button class="btn btn-sm btn-danger">
-                            <i class="fas fa-trash"></i>
-                        </button>
+                          onsubmit="return confirm('¿Eliminar?')">
+                        @csrf @method('DELETE')
+                        <button class="btn btn-sm btn-danger"><i class="fas fa-trash"></i></button>
                     </form>
                 @endif
             </td>
         </tr>
         @empty
         <tr>
-            <td colspan="8" class="text-center">No hay incidencias registradas</td>
+            <td colspan="9" class="text-center">No hay incidencias registradas</td>
         </tr>
         @endforelse
     </tbody>

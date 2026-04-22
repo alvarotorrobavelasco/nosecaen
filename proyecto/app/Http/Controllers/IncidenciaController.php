@@ -104,7 +104,7 @@ class IncidenciaController extends Controller
     public function createCliente()
     {
         $provincias = Provincia::orderBy('nombre')->get();
-        return view('cliente.registro', compact('provincias'));
+        return view('clientes.registro', compact('provincias'));
     }
 
     public function storeCliente(Request $request)
