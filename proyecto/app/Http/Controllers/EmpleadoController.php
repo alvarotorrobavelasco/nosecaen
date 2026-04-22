@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Http\Controllers;
 
 use App\Models\Empleado;
@@ -6,15 +7,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 
-/**
- * Controlador para gestión de empleados.
- * Solo administradores pueden gestionar la lista completa.
- * @author Álvaro Torroba Velasco
- * @version 1.0.0
- */
 class EmpleadoController extends Controller
 {
-    /** Verifica que el usuario sea administrador */
     private function esAdmin()
     {
         return Auth::check() && Auth::user()->tipo === 'administrador';
@@ -38,58 +32,87 @@ class EmpleadoController extends Controller
         if (!$this->esAdmin()) abort(403);
         
         $validated = $request->validate([
-            'dni' => 'required|string|max:9|unique:empleados,dni',
             'nombre' => 'required|string|max:100',
+            'apellidos' => 'required|string|max:150',
+            'telefono' => 'required|regex:/^[\d\s\.\-\(\)]+$/',
             'email' => 'required|email|unique:empleados,email',
-            'telefono' => 'nullable|string',
-            'direccion' => 'nullable|string',
-            'fecha_alta' => 'required|date',
+            'password' => 'required|min:6|confirmed',
             'tipo' => 'required|in:administrador,operario',
-            'password' => 'required|min:6'
+        ], [
+            'telefono.regex' => 'El teléfono solo puede contener números y caracteres básicos.',
+            'email.unique' => 'Este email ya está registrado.',
+            'password.confirmed' => 'Las contraseñas no coinciden.',
         ]);
 
-        $validated['password'] = Hash::make($validated['password']);
-        Empleado::create($validated);
+        Empleado::create([
+            'nombre' => $validated['nombre'],
+            'apellidos' => $validated['apellidos'],
+            'telefono' => $validated['telefono'],
+            'email' => $validated['email'],
+            'password' => Hash::make($validated['password']),
+            'tipo' => $validated['tipo'],
+        ]);
 
         return redirect()->route('empleados.index')->with('success', 'Empleado creado.');
     }
 
+    public function show(Empleado $empleado)
+    {
+        if (!$this->esAdmin()) abort(403);
+        return view('empleados.show', compact('empleado'));
+    }
+
     public function edit(Empleado $empleado)
     {
-        // Un empleado puede editar sus propios datos, el admin puede editar cualquiera
-        if (!$this->esAdmin() && Auth::id() !== $empleado->id) abort(403);
+        if (!$this->esAdmin()) abort(403);
         return view('empleados.edit', compact('empleado'));
     }
 
     public function update(Request $request, Empleado $empleado)
     {
-        if (!$this->esAdmin() && Auth::id() !== $empleado->id) abort(403);
-
+        if (!$this->esAdmin()) abort(403);
+        
+        // Validación completa (incluyendo apellidos y password opcional)
         $validated = $request->validate([
             'nombre' => 'required|string|max:100',
+            'apellidos' => 'required|string|max:150',
+            'telefono' => 'required|regex:/^[\d\s\.\-\(\)]+$/',
             'email' => 'required|email|unique:empleados,email,' . $empleado->id,
-            'telefono' => 'nullable|string',
-            'direccion' => 'nullable|string',
+            'tipo' => 'required|in:administrador,operario',
+            'password' => 'nullable|min:6|confirmed', // Contraseña opcional al editar
+        ], [
+            'telefono.regex' => 'El teléfono solo puede contener números y caracteres básicos.',
+            'email.unique' => 'Este email ya está registrado.',
+            'password.confirmed' => 'Las contraseñas no coinciden.',
         ]);
 
-        // Solo admin puede cambiar tipo y password
-        if ($this->esAdmin()) {
-            $validated['tipo'] = $request->tipo;
-            if ($request->password) {
-                $validated['password'] = Hash::make($request->password);
-            }
+        // Preparar datos básicos
+        $data = [
+            'nombre' => $validated['nombre'],
+            'apellidos' => $validated['apellidos'],
+            'telefono' => $validated['telefono'],
+            'email' => $validated['email'],
+            'tipo' => $validated['tipo'],
+        ];
+
+        // Solo actualizar contraseña si se ha escrito una nueva
+        if (!empty($validated['password'])) {
+            $data['password'] = Hash::make($validated['password']);
         }
 
-        $empleado->update($validated);
+        $empleado->update($data);
+
         return redirect()->route('empleados.index')->with('success', 'Empleado actualizado.');
     }
 
     public function destroy(Empleado $empleado)
     {
         if (!$this->esAdmin()) abort(403);
+        
         if ($empleado->id === Auth::id()) {
-            return back()->with('error', 'No puedes eliminarte a ti mismo.');
+            return back()->with('error', 'No puedes eliminar tu propia cuenta.');
         }
+        
         $empleado->delete();
         return redirect()->route('empleados.index')->with('success', 'Empleado eliminado.');
     }
