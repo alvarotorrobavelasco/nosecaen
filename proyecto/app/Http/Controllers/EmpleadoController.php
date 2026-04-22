@@ -10,18 +10,13 @@ use Illuminate\Support\Facades\Hash;
 /**
  * Controlador para la gestión de Empleados.
  * 
- * Gestiona el personal del sistema (administradores y operarios).
- * 
  * @author Álvaro Torroba Velasco
  * @version 1.0.0
- * @package App\Http\Controllers
  */
 class EmpleadoController extends Controller
 {
     /**
-     * Verificar si el usuario es administrador.
-     * 
-     * @return bool
+     * Verificar si es administrador.
      */
     private function esAdmin()
     {
@@ -30,8 +25,6 @@ class EmpleadoController extends Controller
 
     /**
      * Listado de empleados.
-     * 
-     * @return \Illuminate\View\View
      */
     public function index()
     {
@@ -42,8 +35,6 @@ class EmpleadoController extends Controller
 
     /**
      * Formulario de creación.
-     * 
-     * @return \Illuminate\View\View
      */
     public function create()
     {
@@ -53,23 +44,44 @@ class EmpleadoController extends Controller
 
     /**
      * Guardar empleado.
-     * 
-     * @param \Illuminate\Http\Request $request
-     * @return \Illuminate\Http\RedirectResponse
      */
     public function store(Request $request)
     {
         if (!$this->esAdmin()) abort(403);
         
         $validated = $request->validate([
-            'nombre' => 'required|string|max:100',
-            'telefono' => 'required|regex:/^[\d\s\.\-\(\)]+$/',
-            'email' => 'required|email|unique:empleados,email',
+            'dni' => [
+                'required',
+                'string',
+                'max:20',
+                'unique:empleados,dni',
+                'regex:/^([0-9]{8}[A-Z]|[XYZ][0-9]{7}[A-Z])$/i'
+            ],
+            'nombre' => 'required|string|min:3|max:100',
+            'telefono' => 'required|regex:/^[0-9\s\.\-]{9,15}$/',
+            'email' => 'required|email|max:100|unique:empleados,email',
             'password' => 'required|min:6|confirmed',
             'tipo' => 'required|in:administrador,operario',
+        ], [
+            'dni.required' => 'El DNI/NIE es obligatorio.',
+            'dni.regex' => 'DNI/NIE inválido. Formato: 12345678A o X1234567L.',
+            'dni.unique' => 'Este DNI/NIE ya está registrado.',
+            'nombre.required' => 'El nombre es obligatorio.',
+            'nombre.min' => 'El nombre debe tener al menos 3 caracteres.',
+            'telefono.required' => 'El teléfono es obligatorio.',
+            'telefono.regex' => 'Teléfono inválido. Use 9-15 dígitos numéricos.',
+            'email.required' => 'El email es obligatorio.',
+            'email.email' => 'Email inválido.',
+            'email.unique' => 'Este email ya está registrado.',
+            'password.required' => 'La contraseña es obligatoria.',
+            'password.min' => 'La contraseña debe tener al menos 6 caracteres.',
+            'password.confirmed' => 'Las contraseñas no coinciden.',
+            'tipo.required' => 'El tipo de usuario es obligatorio.',
+            'tipo.in' => 'Tipo inválido. Use "administrador" o "operario".',
         ]);
 
         Empleado::create([
+            'dni' => strtoupper($validated['dni']),
             'nombre' => $validated['nombre'],
             'telefono' => $validated['telefono'],
             'email' => $validated['email'],
@@ -82,9 +94,6 @@ class EmpleadoController extends Controller
 
     /**
      * Detalle de empleado.
-     * 
-     * @param \App\Models\Empleado $empleado
-     * @return \Illuminate\View\View
      */
     public function show(Empleado $empleado)
     {
@@ -94,9 +103,6 @@ class EmpleadoController extends Controller
 
     /**
      * Formulario de edición.
-     * 
-     * @param \App\Models\Empleado $empleado
-     * @return \Illuminate\View\View
      */
     public function edit(Empleado $empleado)
     {
@@ -106,24 +112,37 @@ class EmpleadoController extends Controller
 
     /**
      * Actualizar empleado.
-     * 
-     * @param \Illuminate\Http\Request $request
-     * @param \App\Models\Empleado $empleado
-     * @return \Illuminate\Http\RedirectResponse
      */
     public function update(Request $request, Empleado $empleado)
     {
         if (!$this->esAdmin()) abort(403);
         
         $validated = $request->validate([
-            'nombre' => 'required|string|max:100',
-            'telefono' => 'required|regex:/^[\d\s\.\-\(\)]+$/',
-            'email' => 'required|email|unique:empleados,email,' . $empleado->id,
+            'dni' => [
+                'required',
+                'string',
+                'max:20',
+                'unique:empleados,dni,' . $empleado->id,
+                'regex:/^([0-9]{8}[A-Z]|[XYZ][0-9]{7}[A-Z])$/i'
+            ],
+            'nombre' => 'required|string|min:3|max:100',
+            'telefono' => 'required|regex:/^[0-9\s\.\-]{9,15}$/',
+            'email' => 'required|email|max:100|unique:empleados,email,' . $empleado->id,
             'tipo' => 'required|in:administrador,operario',
             'password' => 'nullable|min:6|confirmed',
+        ], [
+            'dni.required' => 'El DNI/NIE es obligatorio.',
+            'dni.regex' => 'DNI/NIE inválido. Formato: 12345678A o X1234567L.',
+            'dni.unique' => 'Este DNI/NIE ya está registrado.',
+            'nombre.min' => 'El nombre debe tener al menos 3 caracteres.',
+            'telefono.regex' => 'Teléfono inválido. Use 9-15 dígitos numéricos.',
+            'email.unique' => 'Este email ya está registrado.',
+            'password.min' => 'La contraseña debe tener al menos 6 caracteres.',
+            'password.confirmed' => 'Las contraseñas no coinciden.',
         ]);
 
         $data = [
+            'dni' => strtoupper($validated['dni']),
             'nombre' => $validated['nombre'],
             'telefono' => $validated['telefono'],
             'email' => $validated['email'],
@@ -140,14 +159,13 @@ class EmpleadoController extends Controller
 
     /**
      * Eliminar empleado.
-     * 
-     * @param \App\Models\Empleado $empleado
-     * @return \Illuminate\Http\RedirectResponse
      */
     public function destroy(Empleado $empleado)
     {
         if (!$this->esAdmin()) abort(403);
-        if ($empleado->id === Auth::id()) return back()->with('error', 'No puedes eliminar tu propia cuenta.');
+        if ($empleado->id === Auth::id()) {
+            return back()->with('error', 'No puedes eliminar tu propia cuenta.');
+        }
         $empleado->delete();
         return redirect()->route('empleados.index')->with('success', 'Empleado eliminado.');
     }

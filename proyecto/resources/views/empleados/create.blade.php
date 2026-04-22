@@ -11,22 +11,30 @@
         <form action="{{ route('empleados.store') }}" method="POST">
             @csrf
             
-            <div class="mb-3">
-                <label class="form-label fw-bold">Nombre *</label>
-                <input type="text" name="nombre" class="form-control @error('nombre') is-invalid @enderror" value="{{ old('nombre') }}" required>
-                @error('nombre') <div class="invalid-feedback">{{ $message }}</div> @enderror
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label class="form-label fw-bold">DNI/NIE *</label>
+                    <input type="text" name="dni" class="form-control @error('dni') is-invalid @enderror" value="{{ old('dni') }}" required placeholder="Ej: 12345678A, X1234567L">
+                    @error('dni') <div class="invalid-feedback">{{ $message }}</div> @enderror
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label class="form-label fw-bold">Nombre Completo *</label>
+                    <input type="text" name="nombre" class="form-control @error('nombre') is-invalid @enderror" value="{{ old('nombre') }}" required>
+                    @error('nombre') <div class="invalid-feedback">{{ $message }}</div> @enderror
+                </div>
             </div>
 
-            <div class="mb-3">
-                <label class="form-label fw-bold">Teléfono *</label>
-                <input type="text" name="telefono" class="form-control @error('telefono') is-invalid @enderror" value="{{ old('telefono') }}" required>
-                @error('telefono') <div class="invalid-feedback">{{ $message }}</div> @enderror
-            </div>
-
-            <div class="mb-3">
-                <label class="form-label fw-bold">Email *</label>
-                <input type="email" name="email" class="form-control @error('email') is-invalid @enderror" value="{{ old('email') }}" required>
-                @error('email') <div class="invalid-feedback">{{ $message }}</div> @enderror
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label class="form-label fw-bold">Teléfono *</label>
+                    <input type="text" name="telefono" class="form-control @error('telefono') is-invalid @enderror" value="{{ old('telefono') }}" required>
+                    @error('telefono') <div class="invalid-feedback">{{ $message }}</div> @enderror
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label class="form-label fw-bold">Email *</label>
+                    <input type="email" name="email" class="form-control @error('email') is-invalid @enderror" value="{{ old('email') }}" required>
+                    @error('email') <div class="invalid-feedback">{{ $message }}</div> @enderror
+                </div>
             </div>
 
             <div class="row">
@@ -42,8 +50,9 @@
             </div>
 
             <div class="mb-3">
-                <label class="form-label fw-bold">Tipo *</label>
+                <label class="form-label fw-bold">Tipo de Usuario *</label>
                 <select name="tipo" class="form-select @error('tipo') is-invalid @enderror" required>
+                    <option value="">Seleccione...</option>
                     <option value="operario" {{ old('tipo') === 'operario' ? 'selected' : '' }}>Operario</option>
                     <option value="administrador" {{ old('tipo') === 'administrador' ? 'selected' : '' }}>Administrador</option>
                 </select>
@@ -51,7 +60,9 @@
             </div>
 
             <div class="d-flex gap-2">
-                <button type="submit" class="btn btn-success"><i class="fas fa-save"></i> Guardar</button>
+                <button type="submit" class="btn btn-success">
+                    <i class="fas fa-save"></i> Guardar Empleado
+                </button>
                 <a href="{{ route('empleados.index') }}" class="btn btn-secondary">Cancelar</a>
             </div>
         </form>
