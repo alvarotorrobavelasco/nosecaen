@@ -66,18 +66,10 @@ class EmpleadoController extends Controller
             'dni.required' => 'El DNI/NIE es obligatorio.',
             'dni.regex' => 'DNI/NIE inválido. Formato: 12345678A o X1234567L.',
             'dni.unique' => 'Este DNI/NIE ya está registrado.',
-            'nombre.required' => 'El nombre es obligatorio.',
             'nombre.min' => 'El nombre debe tener al menos 3 caracteres.',
-            'telefono.required' => 'El teléfono es obligatorio.',
             'telefono.regex' => 'Teléfono inválido. Use 9-15 dígitos numéricos.',
-            'email.required' => 'El email es obligatorio.',
-            'email.email' => 'Email inválido.',
             'email.unique' => 'Este email ya está registrado.',
-            'password.required' => 'La contraseña es obligatoria.',
-            'password.min' => 'La contraseña debe tener al menos 6 caracteres.',
             'password.confirmed' => 'Las contraseñas no coinciden.',
-            'tipo.required' => 'El tipo de usuario es obligatorio.',
-            'tipo.in' => 'Tipo inválido. Use "administrador" o "operario".',
         ]);
 
         Empleado::create([
@@ -87,6 +79,7 @@ class EmpleadoController extends Controller
             'email' => $validated['email'],
             'password' => Hash::make($validated['password']),
             'tipo' => $validated['tipo'],
+            'fecha_alta' => now(),
         ]);
 
         return redirect()->route('empleados.index')->with('success', 'Empleado creado.');
@@ -137,7 +130,6 @@ class EmpleadoController extends Controller
             'nombre.min' => 'El nombre debe tener al menos 3 caracteres.',
             'telefono.regex' => 'Teléfono inválido. Use 9-15 dígitos numéricos.',
             'email.unique' => 'Este email ya está registrado.',
-            'password.min' => 'La contraseña debe tener al menos 6 caracteres.',
             'password.confirmed' => 'Las contraseñas no coinciden.',
         ]);
 
