@@ -41,13 +41,13 @@
                     </tr>
                     <tr>
                         <th class="text-muted">Fecha Emisión:</th>
-                        <td>{{ $cuota->fecha_emision->format('d/m/Y') }}</td>
+                        <td>{{ \Carbon\Carbon::parse($cuota->fecha_emision)->format('d/m/Y') }}</td>
                     </tr>
                     <tr>
                         <th class="text-muted">Fecha Pago:</th>
                         <td>
                             @if($cuota->pagada === 'S' && $cuota->fecha_pago)
-                                {{ $cuota->fecha_pago->format('d/m/Y') }}
+                                {{ \Carbon\Carbon::parse($cuota->fecha_pago)->format('d/m/Y') }}
                             @else
                                 <span class="text-muted">No pagada</span>
                             @endif

@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Editar Incidencia')
+@section('title', 'Editar Incidencia #' . $incidencia->id)
 
 @section('content')
 <div class="card shadow-sm">
@@ -12,7 +12,6 @@
             @csrf
             @method('PUT')
             
-            {{-- Campos SOLO para administrador --}}
             @if(Auth::user()->tipo === 'administrador')
             <div class="row">
                 <div class="col-md-6 mb-3">
@@ -104,7 +103,6 @@
             </div>
             @endif
 
-            {{-- Campos para TODOS (Estado y Anotaciones) --}}
             <hr>
             <h5 class="mb-3">Gestión de Estado</h5>
             
@@ -121,17 +119,19 @@
 
                 <div class="col-md-6 mb-3">
                     <label class="form-label fw-bold">Fecha Realización</label>
-                    <input type="date" name="fecha_realizacion" class="form-control" value="{{ old('fecha_realizacion', $incidencia->fecha_realizacion) }}">
+                    <input type="date" name="fecha_realizacion" class="form-control @error('fecha_realizacion') is-invalid @enderror" value="{{ old('fecha_realizacion', $incidencia->fecha_realizacion) }}">
+                    @error('fecha_realizacion') <div class="invalid-feedback">{{ $message }}</div> @enderror
                 </div>
             </div>
 
             <div class="mb-3">
                 <label class="form-label fw-bold">Anotaciones del Operario</label>
-                <textarea name="anotaciones_despues" class="form-control" rows="3">{{ old('anotaciones_despues', $incidencia->anotaciones_despues) }}</textarea>
+                <textarea name="anotaciones_despues" class="form-control @error('anotaciones_despues') is-invalid @enderror" rows="3">{{ old('anotaciones_despues', $incidencia->anotaciones_despues) }}</textarea>
+                @error('anotaciones_despues') <div class="invalid-feedback">{{ $message }}</div> @enderror
             </div>
 
             <div class="d-flex gap-2 mt-3">
-                <button type="submit" class="btn btn-warning px-4">
+                <button type="submit" class="btn btn-warning">
                     <i class="fas fa-save"></i> Actualizar
                 </button>
                 <a href="{{ route('incidencias.index') }}" class="btn btn-secondary">Cancelar</a>
