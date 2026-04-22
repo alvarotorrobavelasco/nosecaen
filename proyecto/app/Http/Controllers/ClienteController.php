@@ -8,16 +8,13 @@ use Illuminate\Http\Request;
 /**
  * Controlador para la gestión de Clientes.
  * 
- * Permite realizar operaciones CRUD sobre los clientes del sistema.
- * 
  * @author Álvaro Torroba Velasco
  * @version 1.0.0
- * @package App\Http\Controllers
  */
 class ClienteController extends Controller
 {
     /**
-     * Mostrar listado de clientes.
+     * Listado de clientes.
      * 
      * @return \Illuminate\View\View
      */
@@ -28,7 +25,7 @@ class ClienteController extends Controller
     }
 
     /**
-     * Mostrar formulario de creación.
+     * Formulario de creación.
      * 
      * @return \Illuminate\View\View
      */
@@ -46,7 +43,14 @@ class ClienteController extends Controller
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'cif' => 'required|string|max:20|unique:clientes,cif',
+            // Regex flexible: acepta DNI (8 números + letra), NIE (letra inicial + 7 números + letra) o CIF (letra + 7 números + letra/dígito)
+            'cif' => [
+                'required',
+                'string',
+                'max:20',
+                'unique:clientes,cif',
+                'regex:/^([0-9]{8}[A-Z]|[XYZ][0-9]{7}[A-Z]|[A-HJ-NP-SU-V][0-9]{7}[A-Z0-9])$/i'
+            ],
             'nombre' => 'required|string|max:150',
             'telefono' => 'required|regex:/^[\d\s\.\-\(\)]+$/',
             'email' => 'required|email|unique:clientes,email',
@@ -54,6 +58,12 @@ class ClienteController extends Controller
             'pais' => 'required|string|max:100',
             'moneda' => 'required|in:EUR,USD,GBP',
             'cuota_mensual' => 'required|numeric|min:0',
+        ], [
+            'cif.regex' => 'El identificador debe ser un DNI, NIE o CIF válido.',
+            'cif.unique' => 'Este identificador ya está registrado.',
+            'telefono.regex' => 'El teléfono solo puede contener números y caracteres básicos.',
+            'email.unique' => 'Este email ya está registrado.',
+            'moneda.in' => 'La moneda solo puede ser EUR, USD o GBP.',
         ]);
 
         Cliente::create($validated);
@@ -61,7 +71,7 @@ class ClienteController extends Controller
     }
 
     /**
-     * Mostrar detalle de un cliente.
+     * Detalle de cliente.
      * 
      * @param \App\Models\Cliente $cliente
      * @return \Illuminate\View\View
@@ -72,7 +82,7 @@ class ClienteController extends Controller
     }
 
     /**
-     * Mostrar formulario de edición.
+     * Formulario de edición.
      * 
      * @param \App\Models\Cliente $cliente
      * @return \Illuminate\View\View
@@ -92,7 +102,13 @@ class ClienteController extends Controller
     public function update(Request $request, Cliente $cliente)
     {
         $validated = $request->validate([
-            'cif' => 'required|string|max:20|unique:clientes,cif,' . $cliente->id,
+            'cif' => [
+                'required',
+                'string',
+                'max:20',
+                'unique:clientes,cif,' . $cliente->id,
+                'regex:/^([0-9]{8}[A-Z]|[XYZ][0-9]{7}[A-Z]|[A-HJ-NP-SU-V][0-9]{7}[A-Z0-9])$/i'
+            ],
             'nombre' => 'required|string|max:150',
             'telefono' => 'required|regex:/^[\d\s\.\-\(\)]+$/',
             'email' => 'required|email|unique:clientes,email,' . $cliente->id,
@@ -100,6 +116,12 @@ class ClienteController extends Controller
             'pais' => 'required|string|max:100',
             'moneda' => 'required|in:EUR,USD,GBP',
             'cuota_mensual' => 'required|numeric|min:0',
+        ], [
+            'cif.regex' => 'El identificador debe ser un DNI, NIE o CIF válido.',
+            'cif.unique' => 'Este identificador ya está registrado.',
+            'telefono.regex' => 'El teléfono solo puede contener números y caracteres básicos.',
+            'email.unique' => 'Este email ya está registrado.',
+            'moneda.in' => 'La moneda solo puede ser EUR, USD o GBP.',
         ]);
 
         $cliente->update($validated);
