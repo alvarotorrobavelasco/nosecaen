@@ -8,29 +8,18 @@
         <h4 class="mb-0">Editar Cliente</h4>
     </div>
     <div class="card-body">
-        
-        @if($errors->any())
-        <div class="alert alert-danger">
-            <ul class="mb-0">
-                @foreach($errors->all() as $error)
-                    <li>{{ $error }}</li>
-                @endforeach
-            </ul>
-        </div>
-        @endif
-
         <form action="{{ route('clientes.update', $cliente) }}" method="POST">
             @csrf
             @method('PUT')
             
             <div class="row">
                 <div class="col-md-6 mb-3">
-                    <label class="form-label fw-bold">CIF *</label>
+                    <label class="form-label fw-bold">CIF / DNI / NIE *</label>
                     <input type="text" name="cif" class="form-control @error('cif') is-invalid @enderror" value="{{ old('cif', $cliente->cif) }}" required>
                     @error('cif') <div class="invalid-feedback">{{ $message }}</div> @enderror
                 </div>
                 <div class="col-md-6 mb-3">
-                    <label class="form-label fw-bold">Nombre/Razón Social *</label>
+                    <label class="form-label fw-bold">Nombre / Razón Social *</label>
                     <input type="text" name="nombre" class="form-control @error('nombre') is-invalid @enderror" value="{{ old('nombre', $cliente->nombre) }}" required>
                     @error('nombre') <div class="invalid-feedback">{{ $message }}</div> @enderror
                 </div>
@@ -51,7 +40,7 @@
 
             <div class="mb-3">
                 <label class="form-label fw-bold">Cuenta Corriente (IBAN)</label>
-                <input type="text" name="cuenta_corriente" class="form-control @error('cuenta_corriente') is-invalid @enderror" value="{{ old('cuenta_corriente', $cliente->cuenta_corriente) }}">
+                <input type="text" name="cuenta_corriente" class="form-control @error('cuenta_corriente') is-invalid @enderror" value="{{ old('cuenta_corriente', $cliente->cuenta_corriente) }}" placeholder="Ej: ES12 3456 7890 1234 5678 9012">
                 @error('cuenta_corriente') <div class="invalid-feedback">{{ $message }}</div> @enderror
             </div>
 
@@ -71,19 +60,15 @@
                     @error('moneda') <div class="invalid-feedback">{{ $message }}</div> @enderror
                 </div>
                 <div class="col-md-4 mb-3">
-                    <label class="form-label fw-bold">Cuota Mensual (€) *</label>
+                    <label class="form-label fw-bold">Cuota Mensual *</label>
                     <input type="number" step="0.01" name="cuota_mensual" class="form-control @error('cuota_mensual') is-invalid @enderror" value="{{ old('cuota_mensual', $cliente->cuota_mensual) }}" required>
                     @error('cuota_mensual') <div class="invalid-feedback">{{ $message }}</div> @enderror
                 </div>
             </div>
 
             <div class="d-flex gap-2 mt-3">
-                <button type="submit" class="btn btn-success">
-                    <i class="fas fa-save"></i> Actualizar Cliente
-                </button>
-                <a href="{{ route('clientes.index') }}" class="btn btn-secondary">
-                    <i class="fas fa-times"></i> Cancelar
-                </a>
+                <button type="submit" class="btn btn-success">Actualizar Cliente</button>
+                <a href="{{ route('clientes.index') }}" class="btn btn-secondary">Cancelar</a>
             </div>
         </form>
     </div>

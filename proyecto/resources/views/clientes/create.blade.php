@@ -8,25 +8,13 @@
         <h4 class="mb-0">Nuevo Cliente</h4>
     </div>
     <div class="card-body">
-        
-        {{-- Mostrar errores de validación --}}
-        @if($errors->any())
-        <div class="alert alert-danger">
-            <ul class="mb-0">
-                @foreach($errors->all() as $error)
-                    <li>{{ $error }}</li>
-                @endforeach
-            </ul>
-        </div>
-        @endif
-
         <form action="{{ route('clientes.store') }}" method="POST">
             @csrf
             
             <div class="row">
                 <div class="col-md-6 mb-3">
                     <label class="form-label fw-bold">CIF / DNI / NIE *</label>
-                    <input type="text" name="cif" class="form-control @error('cif') is-invalid @enderror" value="{{ old('cif') }}" required placeholder="Ej: 12345678A, B12345678, X1234567L">
+                    <input type="text" name="cif" class="form-control @error('cif') is-invalid @enderror" value="{{ old('cif') }}" required>
                     @error('cif') <div class="invalid-feedback">{{ $message }}</div> @enderror
                 </div>
                 <div class="col-md-6 mb-3">
@@ -51,7 +39,7 @@
 
             <div class="mb-3">
                 <label class="form-label fw-bold">Cuenta Corriente (IBAN)</label>
-                <input type="text" name="cuenta_corriente" class="form-control @error('cuenta_corriente') is-invalid @enderror" value="{{ old('cuenta_corriente') }}">
+                <input type="text" name="cuenta_corriente" class="form-control @error('cuenta_corriente') is-invalid @enderror" value="{{ old('cuenta_corriente') }}" placeholder="Ej: ES12 3456 7890 1234 5678 9012">
                 @error('cuenta_corriente') <div class="invalid-feedback">{{ $message }}</div> @enderror
             </div>
 
@@ -64,9 +52,9 @@
                 <div class="col-md-4 mb-3">
                     <label class="form-label fw-bold">Moneda *</label>
                     <select name="moneda" class="form-select @error('moneda') is-invalid @enderror" required>
-                        <option value="EUR" {{ old('moneda') === 'EUR' ? 'selected' : '' }}>EUR (€)</option>
-                        <option value="USD" {{ old('moneda') === 'USD' ? 'selected' : '' }}>USD ($)</option>
-                        <option value="GBP" {{ old('moneda') === 'GBP' ? 'selected' : '' }}>GBP (£)</option>
+                        <option value="EUR" {{ old('moneda') === 'EUR' ? 'selected' : '' }}>EUR</option>
+                        <option value="USD" {{ old('moneda') === 'USD' ? 'selected' : '' }}>USD</option>
+                        <option value="GBP" {{ old('moneda') === 'GBP' ? 'selected' : '' }}>GBP</option>
                     </select>
                     @error('moneda') <div class="invalid-feedback">{{ $message }}</div> @enderror
                 </div>
@@ -78,12 +66,8 @@
             </div>
 
             <div class="d-flex gap-2 mt-3">
-                <button type="submit" class="btn btn-success">
-                    <i class="fas fa-save"></i> Guardar Cliente
-                </button>
-                <a href="{{ route('clientes.index') }}" class="btn btn-secondary">
-                    <i class="fas fa-times"></i> Cancelar
-                </a>
+                <button type="submit" class="btn btn-success">Guardar Cliente</button>
+                <a href="{{ route('clientes.index') }}" class="btn btn-secondary">Cancelar</a>
             </div>
         </form>
     </div>
