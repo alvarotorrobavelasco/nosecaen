@@ -10,18 +10,13 @@ use Illuminate\Support\Facades\Auth;
 /**
  * Controlador para la gestión de Cuotas.
  * 
- * Gestiona las cuotas mensuales de los clientes.
- * 
  * @author Álvaro Torroba Velasco
  * @version 1.0.0
- * @package App\Http\Controllers
  */
 class CuotaController extends Controller
 {
     /**
      * Verificar si es administrador.
-     * 
-     * @return bool
      */
     private function esAdmin()
     {
@@ -30,8 +25,6 @@ class CuotaController extends Controller
 
     /**
      * Listado de cuotas.
-     * 
-     * @return \Illuminate\View\View
      */
     public function index()
     {
@@ -42,8 +35,6 @@ class CuotaController extends Controller
 
     /**
      * Formulario de creación.
-     * 
-     * @return \Illuminate\View\View
      */
     public function create()
     {
@@ -54,9 +45,6 @@ class CuotaController extends Controller
 
     /**
      * Guardar cuota.
-     * 
-     * @param \Illuminate\Http\Request $request
-     * @return \Illuminate\Http\RedirectResponse
      */
     public function store(Request $request)
     {
@@ -64,11 +52,26 @@ class CuotaController extends Controller
         
         $validated = $request->validate([
             'cliente_id' => 'required|exists:clientes,id',
-            'concepto' => 'required|string|max:150',
+            'concepto' => 'required|string|min:5|max:150',
             'fecha_emision' => 'required|date',
-            'importe' => 'required|numeric|min:0',
+            'importe' => 'required|numeric|min:0.01|max:999999.99',
             'pagada' => 'required|in:S,N',
-            'notas' => 'nullable|string'
+            'fecha_pago' => 'nullable|date|after_or_equal:fecha_emision',
+            'notas' => 'nullable|string|max:500',
+        ], [
+            'cliente_id.required' => 'Debe seleccionar un cliente.',
+            'cliente_id.exists' => 'Cliente no válido.',
+            'concepto.required' => 'El concepto es obligatorio.',
+            'concepto.min' => 'El concepto debe tener al menos 5 caracteres.',
+            'concepto.max' => 'El concepto no puede superar 150 caracteres.',
+            'fecha_emision.required' => 'La fecha de emisión es obligatoria.',
+            'fecha_emision.date' => 'Fecha inválida.',
+            'importe.required' => 'El importe es obligatorio.',
+            'importe.numeric' => 'Debe ser un número válido.',
+            'importe.min' => 'El importe mínimo es 0.01 €.',
+            'pagada.required' => 'Debe indicar si está pagada.',
+            'pagada.in' => 'El estado solo puede ser S (Sí) o N (No).',
+            'fecha_pago.after_or_equal' => 'La fecha de pago no puede ser anterior a la emisión.',
         ]);
 
         Cuota::create($validated);
@@ -77,9 +80,6 @@ class CuotaController extends Controller
 
     /**
      * Detalle de cuota.
-     * 
-     * @param \App\Models\Cuota $cuota
-     * @return \Illuminate\View\View
      */
     public function show(Cuota $cuota)
     {
@@ -89,9 +89,6 @@ class CuotaController extends Controller
 
     /**
      * Formulario de edición.
-     * 
-     * @param \App\Models\Cuota $cuota
-     * @return \Illuminate\View\View
      */
     public function edit(Cuota $cuota)
     {
@@ -102,10 +99,6 @@ class CuotaController extends Controller
 
     /**
      * Actualizar cuota.
-     * 
-     * @param \Illuminate\Http\Request $request
-     * @param \App\Models\Cuota $cuota
-     * @return \Illuminate\Http\RedirectResponse
      */
     public function update(Request $request, Cuota $cuota)
     {
@@ -113,11 +106,20 @@ class CuotaController extends Controller
         
         $validated = $request->validate([
             'cliente_id' => 'required|exists:clientes,id',
-            'concepto' => 'required|string|max:150',
+            'concepto' => 'required|string|min:5|max:150',
             'fecha_emision' => 'required|date',
-            'importe' => 'required|numeric|min:0',
+            'importe' => 'required|numeric|min:0.01|max:999999.99',
             'pagada' => 'required|in:S,N',
-            'notas' => 'nullable|string'
+            'fecha_pago' => 'nullable|date|after_or_equal:fecha_emision',
+            'notas' => 'nullable|string|max:500',
+        ], [
+            'cliente_id.required' => 'Debe seleccionar un cliente.',
+            'concepto.required' => 'El concepto es obligatorio.',
+            'concepto.min' => 'El concepto debe tener al menos 5 caracteres.',
+            'importe.required' => 'El importe es obligatorio.',
+            'importe.min' => 'El importe mínimo es 0.01 €.',
+            'pagada.in' => 'El estado solo puede ser S o N.',
+            'fecha_pago.after_or_equal' => 'La fecha de pago no puede ser anterior a la emisión.',
         ]);
 
         $cuota->update($validated);
@@ -126,9 +128,6 @@ class CuotaController extends Controller
 
     /**
      * Eliminar cuota.
-     * 
-     * @param \App\Models\Cuota $cuota
-     * @return \Illuminate\Http\RedirectResponse
      */
     public function destroy(Cuota $cuota)
     {
