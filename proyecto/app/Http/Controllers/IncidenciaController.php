@@ -61,33 +61,66 @@ class IncidenciaController extends Controller
 
     public function edit(Incidencia $incidencia)
     {
+        // Validar permisos: admin puede todo, operario solo si es SUYA
+        if (Auth::user()->tipo === 'operario' && $incidencia->operario_id !== Auth::id()) {
+            abort(403, 'No tienes permiso para editar esta incidencia');
+        }
+        
         $clientes = Cliente::orderBy('nombre')->get();
         $provincias = Provincia::orderBy('nombre')->get();
         $operarios = Empleado::where('tipo', 'operario')->get();
+        
         return view('incidencias.edit', compact('incidencia', 'clientes', 'provincias', 'operarios'));
     }
 
     public function update(Request $request, Incidencia $incidencia)
     {
-        $request->validate([
-            'cliente_id' => 'required|exists:clientes,id',
-            'persona_contacto' => 'required|string|max:100',
-            'telefono_contacto' => 'required|regex:/^[\d\s\.\-\(\)]+$/',
-            'descripcion' => 'required|string',
-            'email_contacto' => 'required|email',
-            'direccion' => 'nullable|string|max:255',
-            'poblacion' => 'nullable|string|max:100',
-            'codigo_postal' => 'nullable|regex:/^\d{5}$/',
-            'provincia_codigo' => 'required|exists:provincias,codigo_ine',
-            'estado' => 'required|in:P,R,C',
-            'operario_id' => 'nullable|exists:empleados,id',
-        ], [
+        // Validar permisos: admin puede todo, operario solo si es SUYA
+        if (Auth::user()->tipo === 'operario' && $incidencia->operario_id !== Auth::id()) {
+            abort(403, 'No tienes permiso para modificar esta incidencia');
+        }
+
+        // Validaciones DIFERENCIADAS por rol
+        if (Auth::user()->tipo === 'administrador') {
+            $rules = [
+                'cliente_id' => 'required|exists:clientes,id',
+                'persona_contacto' => 'required|string|max:100',
+                'telefono_contacto' => 'required|regex:/^[\d\s\.\-\(\)]+$/',
+                'descripcion' => 'required|string',
+                'email_contacto' => 'required|email',
+                'direccion' => 'nullable|string|max:255',
+                'poblacion' => 'nullable|string|max:100',
+                'codigo_postal' => 'nullable|regex:/^\d{5}$/',
+                'provincia_codigo' => 'required|exists:provincias,codigo_ine',
+                'estado' => 'required|in:P,R,C',
+                'operario_id' => 'nullable|exists:empleados,id',
+            ];
+        } else {
+            // Operario SOLO puede cambiar estado y anotaciones
+            $rules = [
+                'estado' => 'required|in:P,R,C',
+                'anotaciones_despues' => 'nullable|string',
+                'fecha_realizacion' => 'nullable|date',
+            ];
+        }
+
+        $request->validate($rules, [
             'telefono_contacto.regex' => 'El teléfono solo puede contener números y caracteres básicos.',
             'codigo_postal.regex' => 'El código postal debe ser de 5 dígitos.',
             'estado.in' => 'El estado solo puede ser P, R o C.',
         ]);
 
-        $incidencia->update($request->all());
+        // Actualizar según rol
+        if (Auth::user()->tipo === 'administrador') {
+            $incidencia->update($request->all());
+        } else {
+            $incidencia->update([
+                'estado' => $request->estado,
+                'anotaciones_despues' => $request->anotaciones_despues,
+                'fecha_realizacion' => $request->fecha_realizacion,
+            ]);
+        }
+
         return redirect()->route('incidencias.index')->with('success', 'Incidencia actualizada.');
     }
 
@@ -97,10 +130,7 @@ class IncidenciaController extends Controller
         return redirect()->route('incidencias.index')->with('success', 'Incidencia eliminada.');
     }
 
-    // ========================================
-    // MÉTODOS NUEVOS: Registro público cliente
-    // ========================================
-    
+    // Métodos para registro público de clientes (sin login)
     public function createCliente()
     {
         $provincias = Provincia::orderBy('nombre')->get();

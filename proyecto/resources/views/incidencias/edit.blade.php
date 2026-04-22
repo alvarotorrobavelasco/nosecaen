@@ -12,6 +12,8 @@
             @csrf
             @method('PUT')
             
+            {{-- Campos SOLO para administrador --}}
+            @if(Auth::user()->tipo === 'administrador')
             <div class="row">
                 <div class="col-md-6 mb-3">
                     <label class="form-label fw-bold">Cliente *</label>
@@ -88,6 +90,26 @@
                 </div>
 
                 <div class="col-md-4 mb-3">
+                    <label class="form-label fw-bold">Operario Asignado *</label>
+                    <select name="operario_id" class="form-select @error('operario_id') is-invalid @enderror" required>
+                        <option value="">Seleccione operario</option>
+                        @foreach($operarios as $op)
+                            <option value="{{ $op->id }}" {{ old('operario_id', $incidencia->operario_id) == $op->id ? 'selected' : '' }}>
+                                {{ $op->nombre }}
+                            </option>
+                        @endforeach
+                    </select>
+                    @error('operario_id') <div class="invalid-feedback">{{ $message }}</div> @enderror
+                </div>
+            </div>
+            @endif
+
+            {{-- Campos para TODOS (Estado y Anotaciones) --}}
+            <hr>
+            <h5 class="mb-3">Gestión de Estado</h5>
+            
+            <div class="row">
+                <div class="col-md-6 mb-3">
                     <label class="form-label fw-bold">Estado *</label>
                     <select name="estado" class="form-select @error('estado') is-invalid @enderror" required>
                         <option value="P" {{ old('estado', $incidencia->estado) === 'P' ? 'selected' : '' }}>Pendiente</option>
@@ -96,22 +118,17 @@
                     </select>
                     @error('estado') <div class="invalid-feedback">{{ $message }}</div> @enderror
                 </div>
+
+                <div class="col-md-6 mb-3">
+                    <label class="form-label fw-bold">Fecha Realización</label>
+                    <input type="date" name="fecha_realizacion" class="form-control" value="{{ old('fecha_realizacion', $incidencia->fecha_realizacion) }}">
+                </div>
             </div>
 
-            @if(Auth::user()->tipo === 'administrador')
             <div class="mb-3">
-                <label class="form-label fw-bold">Operario Asignado *</label>
-                <select name="operario_id" class="form-select @error('operario_id') is-invalid @enderror" required>
-                    <option value="">Seleccione operario</option>
-                    @foreach($operarios as $op)
-                        <option value="{{ $op->id }}" {{ old('operario_id', $incidencia->operario_id) == $op->id ? 'selected' : '' }}>
-                            {{ $op->nombre }}
-                        </option>
-                    @endforeach
-                </select>
-                @error('operario_id') <div class="invalid-feedback">{{ $message }}</div> @enderror
+                <label class="form-label fw-bold">Anotaciones del Operario</label>
+                <textarea name="anotaciones_despues" class="form-control" rows="3">{{ old('anotaciones_despues', $incidencia->anotaciones_despues) }}</textarea>
             </div>
-            @endif
 
             <div class="d-flex gap-2 mt-3">
                 <button type="submit" class="btn btn-warning px-4">

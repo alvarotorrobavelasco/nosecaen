@@ -56,10 +56,16 @@
                 <a href="{{ route('incidencias.show', $inc) }}" class="btn btn-sm btn-info">
                     <i class="fas fa-eye"></i>
                 </a>
-                @if(Auth::user()->tipo === 'administrador')
+                
+                {{-- EDITAR: Admin siempre puede, Operario solo si es SUYA --}}
+                @if(Auth::user()->tipo === 'administrador' || (Auth::user()->tipo === 'operario' && $inc->operario_id === Auth::id()))
                     <a href="{{ route('incidencias.edit', $inc) }}" class="btn btn-sm btn-warning">
                         <i class="fas fa-edit"></i>
                     </a>
+                @endif
+                
+                {{-- ELIMINAR: Solo admin --}}
+                @if(Auth::user()->tipo === 'administrador')
                     <form action="{{ route('incidencias.destroy', $inc) }}" method="POST" class="d-inline" 
                           onsubmit="return confirm('¿Eliminar?')">
                         @csrf @method('DELETE')
