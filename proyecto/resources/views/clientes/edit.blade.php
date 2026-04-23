@@ -1,75 +1,63 @@
 @extends('layouts.app')
-
 @section('title', 'Editar Cliente')
-
 @section('content')
 <div class="card shadow-sm">
-    <div class="card-header bg-warning text-dark">
-        <h4 class="mb-0">Editar Cliente</h4>
-    </div>
+    <div class="card-header bg-warning text-dark"><h5 class="mb-0">Editar Cliente</h5></div>
     <div class="card-body">
         <form action="{{ route('clientes.update', $cliente) }}" method="POST">
-            @csrf
-            @method('PUT')
-            
+            @csrf @method('PUT')
             <div class="row">
                 <div class="col-md-6 mb-3">
-                    <label class="form-label fw-bold">CIF / DNI / NIE *</label>
+                    <label class="form-label fw-bold">CIF/DNI *</label>
                     <input type="text" name="cif" class="form-control @error('cif') is-invalid @enderror" value="{{ old('cif', $cliente->cif) }}" required>
-                    @error('cif') <div class="invalid-feedback">{{ $message }}</div> @enderror
+                    @error('cif')<div class="invalid-feedback">{{ $message }}</div>@enderror
                 </div>
                 <div class="col-md-6 mb-3">
-                    <label class="form-label fw-bold">Nombre / Razón Social *</label>
+                    <label class="form-label fw-bold">Nombre/Razón Social *</label>
                     <input type="text" name="nombre" class="form-control @error('nombre') is-invalid @enderror" value="{{ old('nombre', $cliente->nombre) }}" required>
-                    @error('nombre') <div class="invalid-feedback">{{ $message }}</div> @enderror
+                    @error('nombre')<div class="invalid-feedback">{{ $message }}</div>@enderror
                 </div>
             </div>
-
             <div class="row">
                 <div class="col-md-6 mb-3">
                     <label class="form-label fw-bold">Teléfono *</label>
                     <input type="text" name="telefono" class="form-control @error('telefono') is-invalid @enderror" value="{{ old('telefono', $cliente->telefono) }}" required>
-                    @error('telefono') <div class="invalid-feedback">{{ $message }}</div> @enderror
+                    @error('telefono')<div class="invalid-feedback">{{ $message }}</div>@enderror
                 </div>
                 <div class="col-md-6 mb-3">
                     <label class="form-label fw-bold">Email *</label>
                     <input type="email" name="email" class="form-control @error('email') is-invalid @enderror" value="{{ old('email', $cliente->email) }}" required>
-                    @error('email') <div class="invalid-feedback">{{ $message }}</div> @enderror
+                    @error('email')<div class="invalid-feedback">{{ $message }}</div>@enderror
                 </div>
             </div>
-
             <div class="mb-3">
                 <label class="form-label fw-bold">Cuenta Corriente (IBAN)</label>
-                <input type="text" name="cuenta_corriente" class="form-control @error('cuenta_corriente') is-invalid @enderror" value="{{ old('cuenta_corriente', $cliente->cuenta_corriente) }}" placeholder="Ej: ES12 3456 7890 1234 5678 9012">
-                @error('cuenta_corriente') <div class="invalid-feedback">{{ $message }}</div> @enderror
+                <input type="text" name="cuenta_corriente" class="form-control @error('cuenta_corriente') is-invalid @enderror" value="{{ old('cuenta_corriente', $cliente->cuenta_corriente) }}">
+                @error('cuenta_corriente')<div class="invalid-feedback">{{ $message }}</div>@enderror
             </div>
-
             <div class="row">
                 <div class="col-md-4 mb-3">
                     <label class="form-label fw-bold">País *</label>
                     <input type="text" name="pais" class="form-control @error('pais') is-invalid @enderror" value="{{ old('pais', $cliente->pais) }}" required>
-                    @error('pais') <div class="invalid-feedback">{{ $message }}</div> @enderror
+                    @error('pais')<div class="invalid-feedback">{{ $message }}</div>@enderror
                 </div>
                 <div class="col-md-4 mb-3">
                     <label class="form-label fw-bold">Moneda *</label>
                     <select name="moneda" class="form-select @error('moneda') is-invalid @enderror" required>
-                        <option value="EUR" {{ old('moneda', $cliente->moneda) === 'EUR' ? 'selected' : '' }}>EUR</option>
-                        <option value="USD" {{ old('moneda', $cliente->moneda) === 'USD' ? 'selected' : '' }}>USD</option>
-                        <option value="GBP" {{ old('moneda', $cliente->moneda) === 'GBP' ? 'selected' : '' }}>GBP</option>
+                        <option value="EUR" {{ old('moneda', $cliente->moneda)=='EUR'?'selected':'' }}>EUR</option>
+                        <option value="USD" {{ old('moneda', $cliente->moneda)=='USD'?'selected':'' }}>USD</option>
+                        <option value="GBP" {{ old('moneda', $cliente->moneda)=='GBP'?'selected':'' }}>GBP</option>
                     </select>
-                    @error('moneda') <div class="invalid-feedback">{{ $message }}</div> @enderror
+                    @error('moneda')<div class="invalid-feedback">{{ $message }}</div>@enderror
                 </div>
                 <div class="col-md-4 mb-3">
                     <label class="form-label fw-bold">Cuota Mensual *</label>
                     <input type="number" step="0.01" name="cuota_mensual" class="form-control @error('cuota_mensual') is-invalid @enderror" value="{{ old('cuota_mensual', $cliente->cuota_mensual) }}" required>
-                    @error('cuota_mensual') <div class="invalid-feedback">{{ $message }}</div> @enderror
+                    @error('cuota_mensual')<div class="invalid-feedback">{{ $message }}</div>@enderror
                 </div>
             </div>
-
-            <div class="d-flex gap-2 mt-3">
-                <button type="submit" class="btn btn-success">Actualizar Cliente</button>
-                <a href="{{ route('clientes.index') }}" class="btn btn-secondary">Cancelar</a>
-            </div>
+            <button type="submit" class="btn btn-warning"><i class="fas fa-save"></i> Actualizar</button>
+            <a href="{{ route('clientes.index') }}" class="btn btn-secondary">Cancelar</a>
         </form>
     </div>
 </div>
