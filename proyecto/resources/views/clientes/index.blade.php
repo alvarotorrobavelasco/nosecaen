@@ -18,10 +18,11 @@
                     <td>{{ number_format($cli->cuota_mensual, 2) }} €</td>
                     <td>
                         <a href="{{ route('clientes.edit', $cli) }}" class="btn btn-sm btn-warning me-1"><i class="fas fa-edit"></i></a>
-                        <form action="{{ route('clientes.destroy', $cli) }}" method="POST" class="d-inline">
-                            @csrf @method('DELETE')
-                            <button type="submit" class="btn btn-sm btn-danger"><i class="fas fa-trash"></i></button>
-                        </form>
+                        
+                        <!-- ENLACE DE CONFIRMACIÓN (Sin JS) -->
+                        <a href="{{ route('clientes.confirm-destroy', $cli->id) }}" class="btn btn-sm btn-danger" title="Eliminar">
+                            <i class="fas fa-trash"></i>
+                        </a>
                     </td>
                 </tr>
                 @empty

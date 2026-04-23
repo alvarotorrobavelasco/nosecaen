@@ -18,10 +18,11 @@
                     <td><span class="badge bg-secondary">{{ ucfirst($emp->tipo) }}</span></td>
                     <td>
                         <a href="{{ route('empleados.edit', $emp) }}" class="btn btn-sm btn-warning me-1"><i class="fas fa-edit"></i></a>
-                        <form action="{{ route('empleados.destroy', $emp) }}" method="POST" class="d-inline">
-                            @csrf @method('DELETE')
-                            <button type="submit" class="btn btn-sm btn-danger"><i class="fas fa-trash"></i></button>
-                        </form>
+                        
+                        <!-- ENLACE DE CONFIRMACIÓN (Sin JS) -->
+                        <a href="{{ route('empleados.confirm-destroy', $emp->id) }}" class="btn btn-sm btn-danger" title="Eliminar">
+                            <i class="fas fa-trash"></i>
+                        </a>
                     </td>
                 </tr>
                 @empty
