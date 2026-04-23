@@ -38,3 +38,6 @@ Route::resource('cuotas', CuotaController::class);
 // Rutas para clientes no registrados
 Route::get('/cliente/registro', [IncidenciaController::class, 'createCliente'])->name('cliente.registro');
 Route::post('/cliente/registro', [IncidenciaController::class, 'storeCliente'])->name('cliente.registrar');
+
+Route::get('/mi-perfil', [App\Http\Controllers\EmpleadoController::class, 'miPerfil'])->name('mi-perfil');
+Route::put('/mi-perfil', [App\Http\Controllers\EmpleadoController::class, 'updatePerfil'])->name('mi-perfil.update');

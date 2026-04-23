@@ -9,7 +9,7 @@
         {{ Auth::user()->nombre }} ({{ ucfirst(Auth::user()->tipo) }})
     </span>
 
-    
+
 </div>
 
 @if(session('success'))
@@ -85,12 +85,5 @@
         </div>
 
     @endif
-</div>
-
-<!-- Enlace para editar perfil personal (visible para todos) -->
-<div class="mt-4 text-end">
-    <a href="{{ route('mi-perfil') }}" class="btn btn-outline-secondary btn-sm">
-        <i class="fas fa-user-cog"></i> Editar mi perfil
-    </a>
 </div>
 @endsection

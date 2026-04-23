@@ -7,25 +7,13 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 
-/**
- * Controlador para la gestión de Empleados.
- * 
- * @author Álvaro Torroba Velasco
- * @version 1.0.0
- */
 class EmpleadoController extends Controller
 {
-    /**
-     * Verificar si es administrador.
-     */
     private function esAdmin()
     {
         return Auth::check() && Auth::user()->tipo === 'administrador';
     }
 
-    /**
-     * Listado de empleados.
-     */
     public function index()
     {
         if (!$this->esAdmin()) abort(403);
@@ -33,18 +21,12 @@ class EmpleadoController extends Controller
         return view('empleados.index', compact('empleados'));
     }
 
-    /**
-     * Formulario de creación.
-     */
     public function create()
     {
         if (!$this->esAdmin()) abort(403);
         return view('empleados.create');
     }
 
-    /**
-     * Guardar empleado.
-     */
     public function store(Request $request)
     {
         if (!$this->esAdmin()) abort(403);
@@ -58,18 +40,10 @@ class EmpleadoController extends Controller
                 'regex:/^([0-9]{8}[A-Z]|[XYZ][0-9]{7}[A-Z])$/i'
             ],
             'nombre' => 'required|string|min:3|max:100',
-            'telefono' => 'required|regex:/^[0-9\s\.\-]{9,15}$/',
+            'telefono' => 'required|regex:/^[0-9]{9,15}$/',
             'email' => 'required|email|max:100|unique:empleados,email',
             'password' => 'required|min:6|confirmed',
             'tipo' => 'required|in:administrador,operario',
-        ], [
-            'dni.required' => 'El DNI/NIE es obligatorio.',
-            'dni.regex' => 'DNI/NIE inválido. Formato: 12345678A o X1234567L.',
-            'dni.unique' => 'Este DNI/NIE ya está registrado.',
-            'nombre.min' => 'El nombre debe tener al menos 3 caracteres.',
-            'telefono.regex' => 'Teléfono inválido. Use 9-15 dígitos numéricos.',
-            'email.unique' => 'Este email ya está registrado.',
-            'password.confirmed' => 'Las contraseñas no coinciden.',
         ]);
 
         Empleado::create([
@@ -85,27 +59,18 @@ class EmpleadoController extends Controller
         return redirect()->route('empleados.index')->with('success', 'Empleado creado.');
     }
 
-    /**
-     * Detalle de empleado.
-     */
     public function show(Empleado $empleado)
     {
         if (!$this->esAdmin()) abort(403);
         return view('empleados.show', compact('empleado'));
     }
 
-    /**
-     * Formulario de edición.
-     */
     public function edit(Empleado $empleado)
     {
         if (!$this->esAdmin()) abort(403);
         return view('empleados.edit', compact('empleado'));
     }
 
-    /**
-     * Actualizar empleado.
-     */
     public function update(Request $request, Empleado $empleado)
     {
         if (!$this->esAdmin()) abort(403);
@@ -119,18 +84,10 @@ class EmpleadoController extends Controller
                 'regex:/^([0-9]{8}[A-Z]|[XYZ][0-9]{7}[A-Z])$/i'
             ],
             'nombre' => 'required|string|min:3|max:100',
-            'telefono' => 'required|regex:/^[0-9\s\.\-]{9,15}$/',
+            'telefono' => 'required|regex:/^[0-9]{9,15}$/',
             'email' => 'required|email|max:100|unique:empleados,email,' . $empleado->id,
             'tipo' => 'required|in:administrador,operario',
             'password' => 'nullable|min:6|confirmed',
-        ], [
-            'dni.required' => 'El DNI/NIE es obligatorio.',
-            'dni.regex' => 'DNI/NIE inválido. Formato: 12345678A o X1234567L.',
-            'dni.unique' => 'Este DNI/NIE ya está registrado.',
-            'nombre.min' => 'El nombre debe tener al menos 3 caracteres.',
-            'telefono.regex' => 'Teléfono inválido. Use 9-15 dígitos numéricos.',
-            'email.unique' => 'Este email ya está registrado.',
-            'password.confirmed' => 'Las contraseñas no coinciden.',
         ]);
 
         $data = [
@@ -149,9 +106,6 @@ class EmpleadoController extends Controller
         return redirect()->route('empleados.index')->with('success', 'Empleado actualizado.');
     }
 
-    /**
-     * Eliminar empleado.
-     */
     public function destroy(Empleado $empleado)
     {
         if (!$this->esAdmin()) abort(403);
@@ -160,5 +114,48 @@ class EmpleadoController extends Controller
         }
         $empleado->delete();
         return redirect()->route('empleados.index')->with('success', 'Empleado eliminado.');
+    }
+
+    // NUEVO: Perfil del usuario logueado (admin O operario)
+    public function miPerfil()
+    {
+        return view('empleados.perfil', ['empleado' => Auth::user()]);
+    }
+
+    // NUEVO: Actualizar perfil del usuario logueado
+    public function updatePerfil(Request $request)
+    {
+        $empleado = Auth::user();
+        
+        $validated = $request->validate([
+            'nombre' => 'required|string|min:3|max:100',
+            'telefono' => 'required|regex:/^[0-9]{9,15}$/',
+            'email' => 'required|email|max:100|unique:empleados,email,' . $empleado->id,
+            'password' => 'nullable|min:6|confirmed',
+        ], [
+            'nombre.required' => 'El nombre es obligatorio.',
+            'nombre.min' => 'El nombre debe tener al menos 3 caracteres.',
+            'telefono.required' => 'El teléfono es obligatorio.',
+            'telefono.regex' => 'Teléfono inválido. Debe tener 9-15 dígitos numéricos.',
+            'email.required' => 'El email es obligatorio.',
+            'email.email' => 'El email debe ser válido.',
+            'email.unique' => 'Este email ya está registrado.',
+            'password.min' => 'La contraseña debe tener al menos 6 caracteres.',
+            'password.confirmed' => 'Las contraseñas no coinciden.',
+        ]);
+
+        $data = [
+            'nombre' => $validated['nombre'],
+            'telefono' => $validated['telefono'],
+            'email' => $validated['email'],
+        ];
+
+        if (!empty($validated['password'])) {
+            $data['password'] = Hash::make($validated['password']);
+        }
+
+        Empleado::where('id', $empleado->id)->update($data);
+
+        return redirect('/')->with('success', 'Perfil actualizado.');
     }
 }
