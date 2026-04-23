@@ -8,6 +8,8 @@
     <span class="badge bg-primary fs-6">
         {{ Auth::user()->nombre }} ({{ ucfirst(Auth::user()->tipo) }})
     </span>
+
+    
 </div>
 
 @if(session('success'))
