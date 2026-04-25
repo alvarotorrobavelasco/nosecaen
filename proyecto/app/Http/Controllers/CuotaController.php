@@ -7,6 +7,10 @@ use App\Models\Cliente;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Barryvdh\DomPDF\Facade\Pdf; // Para el PDF
+use App\Mail\FacturaEnviada;
+use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Log;
+
 
 /**
  * Controlador para la gestión de Cuotas.
@@ -30,10 +34,13 @@ class CuotaController extends Controller
         return view('cuotas.create', compact('clientes'));
     }
 
+       /**
+     * Guardar nueva cuota y enviar email automático con PDF.
+     */
     public function store(Request $request)
     {
         if (Auth::user()->tipo !== 'administrador') abort(403);
-
+    
         $validated = $request->validate([
             'cliente_id' => 'required|exists:clientes,id',
             'concepto' => 'required|string|min:5|max:150',
@@ -43,11 +50,23 @@ class CuotaController extends Controller
             'fecha_pago' => 'nullable|date',
             'notas' => 'nullable|string|max:500',
         ]);
-
-        Cuota::create($validated);
-        return redirect()->route('cuotas.index')->with('success', 'Cuota creada.');
+    
+        $cuota = Cuota::create($validated);
+    
+        // --- ENVÍO DE CORREO ---
+        try {
+            $cuota->load('cliente'); 
+            Mail::to($cuota->cliente->email)->send(new FacturaEnviada($cuota));
+            
+            return redirect()->route('cuotas.index')
+                ->with('success', 'Cuota creada y factura enviada por correo correctamente.');
+        } catch (\Exception $e) {
+            Log::error('Error enviando factura: ' . $e->getMessage());
+            
+            return redirect()->route('cuotas.index')
+                ->with('warning', 'Cuota creada, pero hubo un error al enviar el correo: ' . $e->getMessage());
+        }
     }
-
     /**
      * DESCARGAR FACTURA EN PDF
      */

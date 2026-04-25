@@ -12,9 +12,12 @@ use App\Http\Controllers\CuotaController;
 // ==========================================
 // Rutas Públicas
 // ==========================================
+
+// Login
 Route::get('/login', [AuthController::class, 'showLoginForm'])->name('login');
 Route::post('/login', [AuthController::class, 'login']);
 
+// Registro público de incidencias (sin login)
 Route::get('/cliente/registro', [IncidenciaController::class, 'createCliente'])->name('cliente.registro');
 Route::post('/cliente/registro', [IncidenciaController::class, 'storeCliente'])->name('cliente.registrar');
 
@@ -26,15 +29,17 @@ Route::middleware(['auth'])->group(function () {
     // Logout
     Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
     
-    // Inicio
+    // Inicio / Dashboard
     Route::get('/', [InicioController::class, 'index'])->name('inicio');
     
-    // Perfil
+    // Perfil de usuario
     Route::get('/mi-perfil', [EmpleadoController::class, 'miPerfil'])->name('mi-perfil');
     Route::put('/mi-perfil', [EmpleadoController::class, 'updatePerfil'])->name('mi-perfil.update');
     
     // --- CRUD Empleados ---
     Route::resource('empleados', EmpleadoController::class);
+    
+    // Ruta de confirmación de eliminación (sin JS)
     Route::get('/empleados/{id}/confirmar', function($id) {
         $emp = App\Models\Empleado::findOrFail($id);
         return view('confirmar-eliminacion', [
@@ -47,6 +52,8 @@ Route::middleware(['auth'])->group(function () {
 
     // --- CRUD Clientes ---
     Route::resource('clientes', ClienteController::class);
+    
+    // Ruta de confirmación de eliminación (sin JS)
     Route::get('/clientes/{id}/confirmar', function($id) {
         $cli = App\Models\Cliente::findOrFail($id);
         return view('confirmar-eliminacion', [
@@ -59,6 +66,8 @@ Route::middleware(['auth'])->group(function () {
 
     // --- CRUD Incidencias ---
     Route::resource('incidencias', IncidenciaController::class);
+    
+    // Ruta de confirmación de eliminación (sin JS)
     Route::get('/incidencias/{id}/confirmar', function($id) {
         $inc = App\Models\Incidencia::findOrFail($id);
         return view('confirmar-eliminacion', [
@@ -68,14 +77,18 @@ Route::middleware(['auth'])->group(function () {
             'ruta_volver' => route('incidencias.index')
         ]);
     })->name('incidencias.confirm-destroy');
+    
+    // Ruta para descargar fichero adjunto de incidencia (privado)
+    Route::get('/incidencias/{incidencia}/download', [IncidenciaController::class, 'descargarFichero'])->name('incidencias.download');
 
     // --- CRUD Cuotas ---
     Route::resource('cuotas', CuotaController::class);
     
-    // Rutas adicionales Cuotas
+    // Rutas adicionales para Cuotas
     Route::get('/cuotas/{id}/pdf', [CuotaController::class, 'descargarPdf'])->name('cuotas.pdf');
     Route::post('/cuotas/remesa', [CuotaController::class, 'generarRemesa'])->name('cuotas.remesa');
     
+    // Ruta de confirmación de eliminación (sin JS)
     Route::get('/cuotas/{id}/confirmar', function($id) {
         $cuota = App\Models\Cuota::findOrFail($id);
         return view('confirmar-eliminacion', [

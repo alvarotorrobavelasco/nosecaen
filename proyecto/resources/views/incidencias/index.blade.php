@@ -9,6 +9,16 @@
 </div>
 <div class="card shadow-sm">
     <div class="card-body">
+        <!-- Formulario de Búsqueda -->
+<form action="{{ route('incidencias.index') }}" method="GET" class="mb-4">
+    <div class="input-group">
+        <input type="text" name="busqueda" class="form-control" placeholder="Buscar por descripción o persona..." value="{{ request('busqueda') }}">
+        <button class="btn btn-primary" type="submit">🔍 Buscar</button>
+        @if(request('busqueda'))
+            <a href="{{ route('incidencias.index') }}" class="btn btn-outline-secondary">✖ Limpiar</a>
+        @endif
+    </div>
+</form>
         <table class="table table-hover align-middle">
             <thead class="table-light">
                 <tr>
