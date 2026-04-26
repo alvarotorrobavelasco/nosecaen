@@ -8,6 +8,7 @@ use App\Http\Controllers\IncidenciaController;
 use App\Http\Controllers\EmpleadoController;
 use App\Http\Controllers\ClienteController;
 use App\Http\Controllers\CuotaController;
+use App\Http\Controllers\ClienteViteController; // ← AÑADIDO: Para Problema 3.3
 
 // ==========================================
 // Rutas Públicas
@@ -100,14 +101,21 @@ Route::middleware(['auth'])->group(function () {
     })->name('cuotas.confirm-destroy');
 
     // --- Problema 3.1: CRUD Clientes con AJAX ---
-Route::prefix('clientes-ajax')->group(function () {
-    Route::get('/', [App\Http\Controllers\ClienteAjaxController::class, 'index'])->name('clientes.ajax.index');
-    Route::get('/list', [App\Http\Controllers\ClienteAjaxController::class, 'list'])->name('clientes.ajax.list');
-    Route::post('/', [App\Http\Controllers\ClienteAjaxController::class, 'store'])->name('clientes.ajax.store');
-    Route::put('/{id}', [App\Http\Controllers\ClienteAjaxController::class, 'update'])->name('clientes.ajax.update');
-    Route::delete('/{id}', [App\Http\Controllers\ClienteAjaxController::class, 'destroy'])->name('clientes.ajax.destroy');
-});
-// Problema 3.2 - CRUD Clientes con Vue/Quasar CDN
-Route::get('/clientes-vue', [App\Http\Controllers\ClienteAjaxController::class, 'indexVue'])->name('clientes.vue.index');
+    Route::prefix('clientes-ajax')->group(function () {
+        Route::get('/', [App\Http\Controllers\ClienteAjaxController::class, 'index'])->name('clientes.ajax.index');
+        Route::get('/list', [App\Http\Controllers\ClienteAjaxController::class, 'list'])->name('clientes.ajax.list');
+        Route::post('/', [App\Http\Controllers\ClienteAjaxController::class, 'store'])->name('clientes.ajax.store');
+        Route::put('/{id}', [App\Http\Controllers\ClienteAjaxController::class, 'update'])->name('clientes.ajax.update');
+        Route::delete('/{id}', [App\Http\Controllers\ClienteAjaxController::class, 'destroy'])->name('clientes.ajax.destroy');
+    });
+
+    // Problema 3.2 - CRUD Clientes con Vue/Quasar CDN
+    Route::get('/clientes-vue', [App\Http\Controllers\ClienteAjaxController::class, 'indexVue'])->name('clientes.vue.index');
+
+    // ✅ Problema 3.3 - CRUD Clientes con Vue + Vite + Inertia
+    Route::get('/clientes-vue-vite', [ClienteViteController::class, 'index'])->name('clientes.vite.index');
+    Route::post('/clientes-vue-vite', [ClienteViteController::class, 'store'])->name('clientes.vite.store');
+    Route::put('/clientes-vue-vite/{cliente}', [ClienteViteController::class, 'update'])->name('clientes.vite.update');
+    Route::delete('/clientes-vue-vite/{cliente}', [ClienteViteController::class, 'destroy'])->name('clientes.vite.destroy');
 
 });
