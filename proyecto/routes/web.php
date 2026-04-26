@@ -99,4 +99,13 @@ Route::middleware(['auth'])->group(function () {
         ]);
     })->name('cuotas.confirm-destroy');
 
+    // --- Problema 3.1: CRUD Clientes con AJAX ---
+Route::prefix('clientes-ajax')->group(function () {
+    Route::get('/', [App\Http\Controllers\ClienteAjaxController::class, 'index'])->name('clientes.ajax.index');
+    Route::get('/list', [App\Http\Controllers\ClienteAjaxController::class, 'list'])->name('clientes.ajax.list');
+    Route::post('/', [App\Http\Controllers\ClienteAjaxController::class, 'store'])->name('clientes.ajax.store');
+    Route::put('/{id}', [App\Http\Controllers\ClienteAjaxController::class, 'update'])->name('clientes.ajax.update');
+    Route::delete('/{id}', [App\Http\Controllers\ClienteAjaxController::class, 'destroy'])->name('clientes.ajax.destroy');
+});
+
 });
