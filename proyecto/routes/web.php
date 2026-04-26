@@ -107,5 +107,7 @@ Route::prefix('clientes-ajax')->group(function () {
     Route::put('/{id}', [App\Http\Controllers\ClienteAjaxController::class, 'update'])->name('clientes.ajax.update');
     Route::delete('/{id}', [App\Http\Controllers\ClienteAjaxController::class, 'destroy'])->name('clientes.ajax.destroy');
 });
+// Problema 3.2 - CRUD Clientes con Vue/Quasar CDN
+Route::get('/clientes-vue', [App\Http\Controllers\ClienteAjaxController::class, 'indexVue'])->name('clientes.vue.index');
 
 });

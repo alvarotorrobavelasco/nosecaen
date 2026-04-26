@@ -3,53 +3,25 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>@yield('title', 'Nosecaen')</title>
-    <!-- Solo CSS, nada de JS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     
     <style>
-        /* Menú desplegable CSS PURO (sin JS) */
-        .user-dropdown {
-            position: relative;
-            display: inline-block;
-        }
-        .user-dropdown-content {
-            display: none;
-            position: absolute;
-            right: 0;
-            background-color: white;
-            min-width: 160px;
-            box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
-            z-index: 100;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-        }
-        .user-dropdown-content a {
-            color: black;
-            padding: 12px 16px;
-            text-decoration: none;
-            display: block;
-        }
+        .user-dropdown { position: relative; display: inline-block; }
+        .user-dropdown-content { display: none; position: absolute; right: 0; background-color: white; min-width: 160px; box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2); z-index: 100; border: 1px solid #ddd; border-radius: 4px; }
+        .user-dropdown-content a { color: black; padding: 12px 16px; text-decoration: none; display: block; }
         .user-dropdown-content a:hover {background-color: #f1f1f1;}
-        /* Mostrar al pasar el ratón */
         .user-dropdown:hover .user-dropdown-content {display: block;}
-        
-        .user-btn {
-            color: white;
-            text-decoration: none;
-            padding: 10px;
-        }
+        .user-btn { color: white; text-decoration: none; padding: 10px; }
         .user-btn:hover { color: #ddd; }
     </style>
 </head>
 <body>
-    <!-- NAVBAR ESTÁTICO (Sin botón hamburguesa JS) -->
     <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
         <div class="container-fluid">
             <a class="navbar-brand" href="/">Nosecaen S.L.</a>
-            
-            <!-- Menú de enlaces (Siempre visible) -->
             <div class="navbar-nav me-auto">
                 @auth
                     @if(Auth::user()->tipo === 'administrador')
@@ -62,8 +34,6 @@
                     @endif
                 @endauth
             </div>
-
-            <!-- Menú de Usuario (CSS Puro) -->
             @auth
             <div class="user-dropdown">
                 <a href="#" class="user-btn fw-bold">
@@ -87,14 +57,10 @@
 
     <main class="container mt-4">
         @if(session('success'))
-            <div class="alert alert-success alert-dismissible fade show">
-                {{ session('success') }}
-            </div>
+            <div class="alert alert-success alert-dismissible fade show">{{ session('success') }}</div>
         @endif
         @if(session('error'))
-            <div class="alert alert-danger alert-dismissible fade show">
-                {{ session('error') }}
-            </div>
+            <div class="alert alert-danger alert-dismissible fade show">{{ session('error') }}</div>
         @endif
         @yield('content')
     </main>
@@ -102,5 +68,8 @@
     <footer class="text-center text-muted mt-5 py-3 border-top">
         <small>&copy; 2026 Nosecaen S.L. - CFGS DAW</small>
     </footer>
+
+    <!-- ✅ LÍNEA AÑADIDA: Permite inyectar scripts desde las vistas -->
+    @stack('scripts')
 </body>
 </html>

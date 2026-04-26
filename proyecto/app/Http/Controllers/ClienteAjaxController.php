@@ -24,6 +24,15 @@ class ClienteAjaxController extends Controller
     }
 
     /**
+ * Mostrar vista del CRUD con Vue/Quasar CDN.
+ */
+public function indexVue()
+{
+    return view('clientes-vue.index');
+}
+
+
+    /**
      * Lista todos los clientes en formato JSON para DataTables.
      */
     public function list()
