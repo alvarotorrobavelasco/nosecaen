@@ -32,5 +32,9 @@
         </table>
     </div>
 </div>
-<div class="mt-3">{{ $empleados->links() }}</div>
+<div class="d-flex flex-wrap justify-content-between align-items-center mt-3 px-2">
+    <div>
+        {{ $empleados->links('pagination::bootstrap-5') }}
+    </div>
+</div>
 @endsection

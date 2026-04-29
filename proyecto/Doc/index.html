@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Documentación PHPDoc - Nosecaen S.L.</title>
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 2rem; background: #f8f9fa; color: #333; line-height: 1.6; }
+        h1 { color: #2c3e50; border-bottom: 3px solid #3498db; padding-bottom: 0.5rem; }
+        h2 { color: #34495e; margin-top: 2rem; }
+        .file { background: white; padding: 1.5rem; margin: 1rem 0; border-left: 4px solid #3498db; border-radius: 4px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        .file-title { font-weight: bold; color: #2c3e50; margin-bottom: 0.5rem; font-size: 1.1rem; font-family: monospace; }
+        .method { margin: 0.3rem 0 0.3rem 1rem; color: #555; font-family: monospace; font-size: 0.95rem; }
+        .param { color: #e74c3c; }
+        .return { color: #27ae60; }
+        .note { background: #fff3cd; padding: 1rem; border-left: 4px solid #ffc107; margin: 1rem 0; border-radius: 4px; }
+        footer { margin-top: 3rem; padding-top: 1rem; border-top: 1px solid #ddd; color: #777; font-size: 0.9rem; }
+        code { background: #e9ecef; padding: 2px 6px; border-radius: 3px; font-family: monospace; }
+    </style>
+</head>
+<body>
+    <h1>📚 Documentación PHPDoc - Nosecaen S.L.</h1>
+    <p><strong>Proyecto:</strong> Gestión de Incidencias - CFGS DAW - I.E.S. La Marisma</p>
+    <p><strong>Autor:</strong> Álvaro Torroba Velasco</p>
+    <p><strong>Fecha:</strong> 2026-04-27</p>
+    <p><strong>Versión:</strong> 1.0</p>
+    <hr>
+
+    <div class="note">
+        <strong>ℹ️ Nota:</strong> Esta documentación se ha generado manualmente conforme al estándar <strong>PSR-5 PHPDoc</strong>. 
+        Todos los archivos fuente incluyen comentarios <code>/** ... */</code> con <code>@author</code>, <code>@date</code>, <code>@version</code>, <code>@param</code> y <code>@return</code>.
+        La generación automática con ApiGen/phpDocumentor no es compatible con PHP 8.2+ por conflictos de dependencias.
+    </div>
+
+    <h2>📁 Controladores</h2>
+
+    <div class="file">
+        <div class="file-title">app/Http/Controllers/ClienteViteController.php</div>
+        <p>Controlador para gestión de clientes con Vue + Vite + Inertia (Problema 3.3)</p>
+        <div class="method">• index() <span class="return">→ \Inertia\Response</span> - Listado de clientes</div>
+        <div class="method">• store(Request $request) <span class="return">→ RedirectResponse</span> - Crear cliente</div>
+        <div class="method">• update(Request $request, Cliente $cliente) <span class="return">→ RedirectResponse</span> - Actualizar</div>
+        <div class="method">• destroy(Cliente $cliente) <span class="return">→ RedirectResponse</span> - Eliminar</div>
+    </div>
+
+    <div class="file">
+        <div class="file-title">app/Http/Controllers/CuotaController.php</div>
+        <p>Gestión de cuotas: CRUD, remesas mensuales y envío de facturas PDF</p>
+        <div class="method">• index(), create(), edit() <span class="return">→ View</span></div>
+        <div class="method">• store(), update() <span class="return">→ RedirectResponse</span> + email</div>
+        <div class="method">• descargarPdf($id) <span class="return">→ Response PDF</span></div>
+        <div class="method">• generarRemesa() <span class="return">→ RedirectResponse</span></div>
+    </div>
+
+    <div class="file">
+        <div class="file-title">app/Http/Controllers/EmpleadoController.php</div>
+        <p>CRUD de empleados + gestión de perfil de usuario</p>
+        <div class="method">• CRUD completo con validación de DNI y roles</div>
+        <div class="method">• miPerfil(), updatePerfil() - Autogestión de usuario</div>
+    </div>
+
+    <div class="file">
+        <div class="file-title">app/Http/Controllers/IncidenciaController.php</div>
+        <p>Gestión de incidencias con validación por rol (admin/operario)</p>
+        <div class="method">• CRUD con permisos diferenciados</div>
+        <div class="method">• createCliente(), storeCliente() - Registro público</div>
+        <div class="method">• descargarFichero($id) - Descarga segura de adjuntos</div>
+    </div>
+
+    <h2>📁 Modelos</h2>
+
+    <div class="file">
+        <div class="file-title">app/Models/Incidencia.php</div>
+        <p>Modelo Eloquent con relaciones y scopes</p>
+        <div class="method">• cliente() <span class="return">→ BelongsTo</span></div>
+        <div class="method">• operario() <span class="return">→ BelongsTo</span></div>
+        <div class="method">• provincia() <span class="return">→ BelongsTo</span></div>
+        <div class="method">• scopeBuscar($query, $texto) <span class="return">→ Builder</span></div>
+    </div>
+
+    <footer>
+        <p>Documentación conforme a PSR-5 PHPDoc. Para visualizar los comentarios completos, abrir los archivos fuente y leer los bloques <code>/** ... */</code>.</p>
+        <p>Generado para entrega de la 2ª Evaluación - CFGS DAW - I.E.S. La Marisma</p>
+    </footer>
+</body>
+</html>

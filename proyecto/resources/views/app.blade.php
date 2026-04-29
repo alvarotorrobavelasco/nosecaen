@@ -3,12 +3,95 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     <title inertia>{{ $title ?? 'Nosecaen' }}</title>
+    
+    <!-- CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    
+    <!-- Estilos para dropdown y user-menu (igual que tu layout principal) -->
+    <style>
+        .user-dropdown { position: relative; display: inline-block; }
+        .user-dropdown-content { display: none; position: absolute; right: 0; background-color: white; min-width: 160px; box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2); z-index: 100; border: 1px solid #ddd; border-radius: 4px; }
+        .user-dropdown-content a { color: black; padding: 12px 16px; text-decoration: none; display: block; }
+        .user-dropdown-content a:hover {background-color: #f1f1f1;}
+        .user-dropdown:hover .user-dropdown-content {display: block;}
+        .user-btn { color: white; text-decoration: none; padding: 10px; }
+        .user-btn:hover { color: #ddd; }
+        .nav-item.dropdown:hover .dropdown-menu { display: block; margin-top: 0; }
+    </style>
+    
     @vite(['resources/js/app.js'])
     @inertiaHead
 </head>
 <body>
+    <!-- NAVBAR (IDÉNTICA a tu layout principal) -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="/">Nosecaen S.L.</a>
+            <div class="navbar-nav me-auto">
+                @auth
+                    @if(Auth::user()->tipo === 'administrador')
+                        <a class="nav-link" href="{{ route('empleados.index') }}">Empleados</a>
+                        
+                        <!-- ✅ DROPDOWN DE CLIENTES -->
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" id="clientesDropdown" role="button" data-bs-toggle="dropdown">
+                                Clientes
+                            </a>
+                            <ul class="dropdown-menu" aria-labelledby="clientesDropdown">
+                                <li><a class="dropdown-item" href="{{ route('clientes.index') }}">
+                                    <i class="fas fa-table me-2"></i>Clientes (Blade)
+                                </a></li>
+                                <li><hr class="dropdown-divider"></li>
+                                <li><a class="dropdown-item" href="{{ route('clientes.ajax.index') }}">
+                                    <i class="fas fa-code me-2"></i>3.1 - AJAX + DataTables
+                                </a></li>
+                                <li><a class="dropdown-item" href="{{ route('clientes.vue.index') }}">
+                                    <i class="fab fa-vuejs me-2"></i>3.2 - Vue + Quasar CDN
+                                </a></li>
+                                <li><a class="dropdown-item" href="{{ route('clientes.vite.index') }}">
+                                    <i class="fas fa-bolt me-2"></i>3.3 - Vue + Vite + Inertia
+                                </a></li>
+                            </ul>
+                        </li>
+                        
+                        <a class="nav-link" href="{{ route('incidencias.index') }}">Incidencias</a>
+                        <a class="nav-link" href="{{ route('cuotas.index') }}">Cuotas</a>
+                    @else
+                        <a class="nav-link" href="{{ route('incidencias.index') }}">Mis Incidencias</a>
+                    @endif
+                @endauth
+            </div>
+            
+            @auth
+            <div class="user-dropdown">
+                <a href="#" class="user-btn fw-bold">
+                    <i class="fas fa-user-circle"></i> {{ Auth::user()->nombre }} ▾
+                </a>
+                <div class="user-dropdown-content">
+                    <a href="{{ route('mi-perfil') }}"><i class="fas fa-id-card"></i> Mi Perfil</a>
+                    <form action="{{ route('logout') }}" method="POST" style="margin:0;">
+                        @csrf
+                        <button type="submit" class="btn btn-link text-danger w-100 text-start px-3 py-2" style="text-decoration:none;">
+                            <i class="fas fa-sign-out-alt"></i> Salir
+                        </button>
+                    </form>
+                </div>
+            </div>
+            @else
+            <a href="{{ route('login') }}" class="btn btn-light btn-sm">Iniciar Sesión</a>
+            @endauth
+        </div>
+    </nav>
+
+    <!-- Contenido de Inertia -->
     @inertia
+
+    <!-- Footer (igual que tu layout) -->
+    <footer class="text-center text-muted mt-5 py-3 border-top">
+        <small>&copy; 2026 Nosecaen S.L. - CFGS DAW</small>
+    </footer>
 </body>
 </html>

@@ -6,7 +6,7 @@ use App\Models\Cuota;
 use App\Models\Cliente;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Barryvdh\DomPDF\Facade\Pdf; // Para el PDF
+use Barryvdh\DomPDF\Facade\Pdf;
 use App\Mail\FacturaEnviada;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Log;

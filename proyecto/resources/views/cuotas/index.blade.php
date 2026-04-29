@@ -42,7 +42,11 @@
                 @endforelse
             </tbody>
         </table>
-        {{ $cuotas->links() }}
+        <div class="d-flex flex-wrap justify-content-between align-items-center mt-3 px-2">
+            <div>
+                {{ $cuotas->links('pagination::bootstrap-5') }}
+            </div>
+        </div>
     </div>
 </div>
 @endsection

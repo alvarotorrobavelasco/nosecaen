@@ -1,0 +1,113 @@
+\doxysection{App\textbackslash{}Http\textbackslash{}Controllers\textbackslash{}Cuota\+Controller Class Reference}
+\hypertarget{class_app_1_1_http_1_1_controllers_1_1_cuota_controller}{}\label{class_app_1_1_http_1_1_controllers_1_1_cuota_controller}\index{App\textbackslash{}Http\textbackslash{}Controllers\textbackslash{}CuotaController@{App\textbackslash{}Http\textbackslash{}Controllers\textbackslash{}CuotaController}}
+
+
+Controlador para la gestión de Cuotas.  
+
+
+Inheritance diagram for App\textbackslash{}Http\textbackslash{}Controllers\textbackslash{}Cuota\+Controller:\+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=2.000000cm]{class_app_1_1_http_1_1_controllers_1_1_cuota_controller}
+\end{center}
+\end{figure}
+\doxysubsubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\doxymbox{\hyperlink{class_app_1_1_http_1_1_controllers_1_1_cuota_controller_a6c44eced93b6f8c519b8d7e04b9bb698}{index}} ()
+\item 
+\doxymbox{\hyperlink{class_app_1_1_http_1_1_controllers_1_1_cuota_controller_a320fa7ba04fac15a73a7fb1fbf9e5679}{create}} ()
+\item 
+\doxymbox{\hyperlink{class_app_1_1_http_1_1_controllers_1_1_cuota_controller_a77a4e6de1b988fb88003771a89a783ed}{store}} (Request \$request)
+\begin{DoxyCompactList}\small\item\em Guardar nueva cuota y enviar email automático con PDF. \end{DoxyCompactList}\item 
+\doxymbox{\hyperlink{class_app_1_1_http_1_1_controllers_1_1_cuota_controller_a15f44e503e0abb74eeefb911da42b74b}{descargar\+Pdf}} (\$id)
+\begin{DoxyCompactList}\small\item\em DESCARGAR FACTURA EN PDF. \end{DoxyCompactList}\item 
+\doxymbox{\hyperlink{class_app_1_1_http_1_1_controllers_1_1_cuota_controller_a5123406d4075d9e2b41c874b1487dcd8}{generar\+Remesa}} ()
+\begin{DoxyCompactList}\small\item\em GENERAR REMESA MENSUAL (Masivo). \end{DoxyCompactList}\item 
+\doxymbox{\hyperlink{class_app_1_1_http_1_1_controllers_1_1_cuota_controller_acdb861533a5f466d0ea08fe1ad5f33ee}{edit}} (\doxymbox{\hyperlink{class_app_1_1_models_1_1_cuota}{Cuota}} \$cuota)
+\item 
+\doxymbox{\hyperlink{class_app_1_1_http_1_1_controllers_1_1_cuota_controller_a8d810c5dfbf340ae1670cc6394285ce3}{update}} (Request \$request, \doxymbox{\hyperlink{class_app_1_1_models_1_1_cuota}{Cuota}} \$cuota)
+\item 
+\doxymbox{\hyperlink{class_app_1_1_http_1_1_controllers_1_1_cuota_controller_aba6228a5ccfde601317a840ae360ac79}{destroy}} (\doxymbox{\hyperlink{class_app_1_1_models_1_1_cuota}{Cuota}} \$cuota)
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+Controlador para la gestión de Cuotas. 
+
+\begin{DoxyAuthor}{Author}
+Álvaro Torroba Velasco 
+\end{DoxyAuthor}
+\begin{DoxyVersion}{Version}
+1.\+0.\+0 
+\end{DoxyVersion}
+
+
+\label{doc-func-members}
+\Hypertarget{class_app_1_1_http_1_1_controllers_1_1_cuota_controller_doc-func-members}
+\doxysubsection{Member Function Documentation}
+\Hypertarget{class_app_1_1_http_1_1_controllers_1_1_cuota_controller_a320fa7ba04fac15a73a7fb1fbf9e5679}\index{App\textbackslash{}Http\textbackslash{}Controllers\textbackslash{}CuotaController@{App\textbackslash{}Http\textbackslash{}Controllers\textbackslash{}CuotaController}!create@{create}}
+\index{create@{create}!App\textbackslash{}Http\textbackslash{}Controllers\textbackslash{}CuotaController@{App\textbackslash{}Http\textbackslash{}Controllers\textbackslash{}CuotaController}}
+\doxysubsubsection{\texorpdfstring{create()}{create()}}
+{\footnotesize\ttfamily \label{class_app_1_1_http_1_1_controllers_1_1_cuota_controller_a320fa7ba04fac15a73a7fb1fbf9e5679} 
+App\textbackslash{}\+Http\textbackslash{}\+Controllers\textbackslash{}\+Cuota\+Controller::\+create (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption})}
+
+\Hypertarget{class_app_1_1_http_1_1_controllers_1_1_cuota_controller_a15f44e503e0abb74eeefb911da42b74b}\index{App\textbackslash{}Http\textbackslash{}Controllers\textbackslash{}CuotaController@{App\textbackslash{}Http\textbackslash{}Controllers\textbackslash{}CuotaController}!descargarPdf@{descargarPdf}}
+\index{descargarPdf@{descargarPdf}!App\textbackslash{}Http\textbackslash{}Controllers\textbackslash{}CuotaController@{App\textbackslash{}Http\textbackslash{}Controllers\textbackslash{}CuotaController}}
+\doxysubsubsection{\texorpdfstring{descargarPdf()}{descargarPdf()}}
+{\footnotesize\ttfamily \label{class_app_1_1_http_1_1_controllers_1_1_cuota_controller_a15f44e503e0abb74eeefb911da42b74b} 
+App\textbackslash{}\+Http\textbackslash{}\+Controllers\textbackslash{}\+Cuota\+Controller::\+descargar\+Pdf (\begin{DoxyParamCaption}\item[{}]{\$id}{}\end{DoxyParamCaption})}
+
+
+
+DESCARGAR FACTURA EN PDF. 
+
+\Hypertarget{class_app_1_1_http_1_1_controllers_1_1_cuota_controller_aba6228a5ccfde601317a840ae360ac79}\index{App\textbackslash{}Http\textbackslash{}Controllers\textbackslash{}CuotaController@{App\textbackslash{}Http\textbackslash{}Controllers\textbackslash{}CuotaController}!destroy@{destroy}}
+\index{destroy@{destroy}!App\textbackslash{}Http\textbackslash{}Controllers\textbackslash{}CuotaController@{App\textbackslash{}Http\textbackslash{}Controllers\textbackslash{}CuotaController}}
+\doxysubsubsection{\texorpdfstring{destroy()}{destroy()}}
+{\footnotesize\ttfamily \label{class_app_1_1_http_1_1_controllers_1_1_cuota_controller_aba6228a5ccfde601317a840ae360ac79} 
+App\textbackslash{}\+Http\textbackslash{}\+Controllers\textbackslash{}\+Cuota\+Controller::\+destroy (\begin{DoxyParamCaption}\item[{\doxymbox{\hyperlink{class_app_1_1_models_1_1_cuota}{Cuota}}}]{\$cuota}{}\end{DoxyParamCaption})}
+
+\Hypertarget{class_app_1_1_http_1_1_controllers_1_1_cuota_controller_acdb861533a5f466d0ea08fe1ad5f33ee}\index{App\textbackslash{}Http\textbackslash{}Controllers\textbackslash{}CuotaController@{App\textbackslash{}Http\textbackslash{}Controllers\textbackslash{}CuotaController}!edit@{edit}}
+\index{edit@{edit}!App\textbackslash{}Http\textbackslash{}Controllers\textbackslash{}CuotaController@{App\textbackslash{}Http\textbackslash{}Controllers\textbackslash{}CuotaController}}
+\doxysubsubsection{\texorpdfstring{edit()}{edit()}}
+{\footnotesize\ttfamily \label{class_app_1_1_http_1_1_controllers_1_1_cuota_controller_acdb861533a5f466d0ea08fe1ad5f33ee} 
+App\textbackslash{}\+Http\textbackslash{}\+Controllers\textbackslash{}\+Cuota\+Controller::\+edit (\begin{DoxyParamCaption}\item[{\doxymbox{\hyperlink{class_app_1_1_models_1_1_cuota}{Cuota}}}]{\$cuota}{}\end{DoxyParamCaption})}
+
+\Hypertarget{class_app_1_1_http_1_1_controllers_1_1_cuota_controller_a5123406d4075d9e2b41c874b1487dcd8}\index{App\textbackslash{}Http\textbackslash{}Controllers\textbackslash{}CuotaController@{App\textbackslash{}Http\textbackslash{}Controllers\textbackslash{}CuotaController}!generarRemesa@{generarRemesa}}
+\index{generarRemesa@{generarRemesa}!App\textbackslash{}Http\textbackslash{}Controllers\textbackslash{}CuotaController@{App\textbackslash{}Http\textbackslash{}Controllers\textbackslash{}CuotaController}}
+\doxysubsubsection{\texorpdfstring{generarRemesa()}{generarRemesa()}}
+{\footnotesize\ttfamily \label{class_app_1_1_http_1_1_controllers_1_1_cuota_controller_a5123406d4075d9e2b41c874b1487dcd8} 
+App\textbackslash{}\+Http\textbackslash{}\+Controllers\textbackslash{}\+Cuota\+Controller::\+generar\+Remesa (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption})}
+
+
+
+GENERAR REMESA MENSUAL (Masivo). 
+
+\Hypertarget{class_app_1_1_http_1_1_controllers_1_1_cuota_controller_a6c44eced93b6f8c519b8d7e04b9bb698}\index{App\textbackslash{}Http\textbackslash{}Controllers\textbackslash{}CuotaController@{App\textbackslash{}Http\textbackslash{}Controllers\textbackslash{}CuotaController}!index@{index}}
+\index{index@{index}!App\textbackslash{}Http\textbackslash{}Controllers\textbackslash{}CuotaController@{App\textbackslash{}Http\textbackslash{}Controllers\textbackslash{}CuotaController}}
+\doxysubsubsection{\texorpdfstring{index()}{index()}}
+{\footnotesize\ttfamily \label{class_app_1_1_http_1_1_controllers_1_1_cuota_controller_a6c44eced93b6f8c519b8d7e04b9bb698} 
+App\textbackslash{}\+Http\textbackslash{}\+Controllers\textbackslash{}\+Cuota\+Controller::\+index (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption})}
+
+\Hypertarget{class_app_1_1_http_1_1_controllers_1_1_cuota_controller_a77a4e6de1b988fb88003771a89a783ed}\index{App\textbackslash{}Http\textbackslash{}Controllers\textbackslash{}CuotaController@{App\textbackslash{}Http\textbackslash{}Controllers\textbackslash{}CuotaController}!store@{store}}
+\index{store@{store}!App\textbackslash{}Http\textbackslash{}Controllers\textbackslash{}CuotaController@{App\textbackslash{}Http\textbackslash{}Controllers\textbackslash{}CuotaController}}
+\doxysubsubsection{\texorpdfstring{store()}{store()}}
+{\footnotesize\ttfamily \label{class_app_1_1_http_1_1_controllers_1_1_cuota_controller_a77a4e6de1b988fb88003771a89a783ed} 
+App\textbackslash{}\+Http\textbackslash{}\+Controllers\textbackslash{}\+Cuota\+Controller::\+store (\begin{DoxyParamCaption}\item[{Request}]{\$request}{}\end{DoxyParamCaption})}
+
+
+
+Guardar nueva cuota y enviar email automático con PDF. 
+
+\Hypertarget{class_app_1_1_http_1_1_controllers_1_1_cuota_controller_a8d810c5dfbf340ae1670cc6394285ce3}\index{App\textbackslash{}Http\textbackslash{}Controllers\textbackslash{}CuotaController@{App\textbackslash{}Http\textbackslash{}Controllers\textbackslash{}CuotaController}!update@{update}}
+\index{update@{update}!App\textbackslash{}Http\textbackslash{}Controllers\textbackslash{}CuotaController@{App\textbackslash{}Http\textbackslash{}Controllers\textbackslash{}CuotaController}}
+\doxysubsubsection{\texorpdfstring{update()}{update()}}
+{\footnotesize\ttfamily \label{class_app_1_1_http_1_1_controllers_1_1_cuota_controller_a8d810c5dfbf340ae1670cc6394285ce3} 
+App\textbackslash{}\+Http\textbackslash{}\+Controllers\textbackslash{}\+Cuota\+Controller::\+update (\begin{DoxyParamCaption}\item[{Request}]{\$request}{, }\item[{\doxymbox{\hyperlink{class_app_1_1_models_1_1_cuota}{Cuota}}}]{\$cuota}{}\end{DoxyParamCaption})}
+
+
+
+The documentation for this class was generated from the following file:\+\begin{DoxyCompactItemize}
+\item 
+app/\+\+Http/\+\+Controllers/\+\doxymbox{\hyperlink{_cuota_controller_8php}{Cuota\+Controller.\+php}}\end{DoxyCompactItemize}

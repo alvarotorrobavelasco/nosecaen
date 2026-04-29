@@ -16,6 +16,9 @@
         .user-dropdown:hover .user-dropdown-content {display: block;}
         .user-btn { color: white; text-decoration: none; padding: 10px; }
         .user-btn:hover { color: #ddd; }
+        
+        /* Dropdown de Clientes en navbar */
+        .nav-item.dropdown:hover .dropdown-menu { display: block; margin-top: 0; }
     </style>
 </head>
 <body>
@@ -26,7 +29,29 @@
                 @auth
                     @if(Auth::user()->tipo === 'administrador')
                         <a class="nav-link" href="{{ route('empleados.index') }}">Empleados</a>
-                        <a class="nav-link" href="{{ route('clientes.index') }}">Clientes</a>
+                        
+                        <!-- ✅ DROPDOWN DE CLIENTES -->
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" id="clientesDropdown" role="button" data-bs-toggle="dropdown">
+                                Clientes
+                            </a>
+                            <ul class="dropdown-menu" aria-labelledby="clientesDropdown">
+                                <li><a class="dropdown-item" href="{{ route('clientes.index') }}">
+                                    <i class="fas fa-table me-2"></i>Clientes (Blade)
+                                </a></li>
+                                <li><hr class="dropdown-divider"></li>
+                                <li><a class="dropdown-item" href="{{ route('clientes.ajax.index') }}">
+                                    <i class="fas fa-code me-2"></i>3.1 - AJAX + DataTables
+                                </a></li>
+                                <li><a class="dropdown-item" href="{{ route('clientes.vue.index') }}">
+                                    <i class="fab fa-vuejs me-2"></i>3.2 - Vue + Quasar CDN
+                                </a></li>
+                                <li><a class="dropdown-item" href="{{ route('clientes.vite.index') }}">
+                                    <i class="fas fa-bolt me-2"></i>3.3 - Vue + Vite + Inertia
+                                </a></li>
+                            </ul>
+                        </li>
+                        
                         <a class="nav-link" href="{{ route('incidencias.index') }}">Incidencias</a>
                         <a class="nav-link" href="{{ route('cuotas.index') }}">Cuotas</a>
                     @else
@@ -69,7 +94,6 @@
         <small>&copy; 2026 Nosecaen S.L. - CFGS DAW</small>
     </footer>
 
-    <!-- ✅ LÍNEA AÑADIDA: Permite inyectar scripts desde las vistas -->
     @stack('scripts')
 </body>
 </html>

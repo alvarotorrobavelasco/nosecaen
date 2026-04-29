@@ -18,18 +18,18 @@ class ClienteViteController extends Controller
             'cif' => 'required|string|size:9', 'nombre' => 'required|string',
             'telefono' => 'required|string|min:9', 'email' => 'required|email',
             'pais' => 'required|string', 'moneda' => 'required|string|size:3',
-            'importe_cuota_mensual' => 'required|numeric|min:0'
+            'cuota_mensual' => 'required|numeric|min:0' // ← CAMBIADO AQUÍ
         ]);
         Cliente::create($request->all());
         return redirect()->route('clientes.vite.index');
     }
-
+    
     public function update(Request $request, Cliente $cliente) {
         $request->validate([
             'cif' => 'required|string|size:9', 'nombre' => 'required|string',
             'telefono' => 'required|string|min:9', 'email' => 'required|email',
             'pais' => 'required|string', 'moneda' => 'required|string|size:3',
-            'importe_cuota_mensual' => 'required|numeric|min:0'
+            'cuota_mensual' => 'required|numeric|min:0'
         ]);
         $cliente->update($request->all());
         return redirect()->route('clientes.vite.index');

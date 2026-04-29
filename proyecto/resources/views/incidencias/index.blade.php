@@ -56,7 +56,11 @@
                 @endforelse
             </tbody>
         </table>
-        {{ $incidencias->links() }}
+        <div class="d-flex flex-wrap justify-content-between align-items-center mt-3 px-2">
+            <div>
+                {{ $incidencias->links('pagination::bootstrap-5') }}
+            </div>
+        </div>
     </div>
 </div>
 @endsection
